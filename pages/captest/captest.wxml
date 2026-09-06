@@ -1,0 +1,130 @@
+<view class="page">
+  <!-- 首次免责声明 -->
+  <view class="modal-mask" wx:if="{{showDisclaimer && guide}}" catchtouchmove="true">
+    <view class="modal">
+      <view class="modal-title">使用前请阅读</view>
+      <scroll-view class="modal-scroll" scroll-y>
+        <view class="modal-intro">{{guide.intro}}</view>
+        <view class="modal-sub">免责声明</view>
+        <view class="modal-disc" wx:for="{{guide.disclaimer}}" wx:key="*this">{{index + 1}}. {{item}}</view>
+      </scroll-view>
+      <view class="modal-btn" bindtap="onAgreeDisclaimer">我已阅读并理解</view>
+    </view>
+  </view>
+
+  <view class="card guide-card" wx:if="{{guide}}">
+    <view class="section-title row-head">
+      <text>测试流程</text>
+      <text class="link-mini" bindtap="goVerdictGuide">判定手册 ›</text>
+    </view>
+    <view class="guide-intro">{{guide.intro}}</view>
+    <view class="step" wx:for="{{guide.steps}}" wx:key="title">
+      <view class="step-no">{{index + 1}}</view>
+      <view class="step-body">
+        <view class="step-title">{{item.title}}</view>
+        <view class="step-text">{{item.text}}</view>
+      </view>
+    </view>
+
+    <view class="toggle" bindtap="onToggleDetail">
+      <text>{{showDetail ? '收起' : '展开'}}原理说明与注意事项</text>
+      <text class="toggle-arrow">{{showDetail ? '▲' : '▼'}}</text>
+    </view>
+
+    <block wx:if="{{showDetail}}">
+      <view class="sub-title">计算原理</view>
+      <view class="para formula">{{guide.formula}}</view>
+
+      <view class="sub-title">日志需包含</view>
+      <view class="bullet" wx:for="{{guide.requirements}}" wx:key="*this">· {{item}}</view>
+
+      <view class="sub-title">怎样更准</view>
+      <view class="bullet" wx:for="{{guide.goodPractice}}" wx:key="*this">· {{item}}</view>
+
+      <view class="sub-title">电池类型差异</view>
+      <view class="chem" wx:for="{{guide.chemistry}}" wx:key="type">
+        <view class="chem-type">{{item.type}}</view>
+        <view class="chem-note">{{item.note}}</view>
+      </view>
+
+      <view class="sub-title">常见误解</view>
+      <view class="bullet muted-bullet" wx:for="{{guide.misbeliefs}}" wx:key="*this">· {{item}}</view>
+    </block>
+  </view>
+
+  <view class="card disclaimer-card" wx:if="{{guide}}">
+    <view class="section-title">免责声明</view>
+    <view class="disclaimer" wx:for="{{guide.disclaimer}}" wx:key="*this">{{item}}</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">示例场景</view>
+    <view
+      class="demo {{activeId===item.id?'on':''}}"
+      wx:for="{{scenarios}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="onPickDemo"
+    >
+      <view class="demo-title">{{item.title}}</view>
+      <view class="demo-desc">{{item.desc}}</view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{result}}">
+    <view class="verdict" style="background:{{result.color}};">
+      <view class="v-label">{{result.label}}</view>
+      <view class="v-sum">{{result.summary}}</view>
+      <view class="v-disc">{{result.disclaimer}}</view>
+    </view>
+
+    <view class="section-title" style="margin-top:20rpx;">关键数字</view>
+    <view class="num" wx:for="{{numRows}}" wx:key="k">
+      <text class="num-k">{{item.k}}</text>
+      <text class="num-v">{{item.v}}</text>
+    </view>
+
+    <view class="issues" wx:if="{{result.issues.length}}">
+      <view class="section-title" style="margin-top:20rpx;">注意</view>
+      <view class="issue" wx:for="{{result.issues}}" wx:key="*this">· {{item}}</view>
+    </view>
+
+    <view class="section-title" style="margin-top:20rpx;">依据</view>
+    <view class="ev" wx:for="{{result.evidence}}" wx:key="index">
+      <text class="tag tag-neutral">算</text>
+      <text class="ev-text">{{item.text}}</text>
+    </view>
+
+    <view class="section-title" style="margin-top:20rpx;">建议</view>
+    <view class="advice" wx:for="{{result.advice}}" wx:key="*this">· {{item}}</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">参数</view>
+    <view class="field">
+      <text class="field-label">手动额定容量 Ah（无 BRM 时填写）</text>
+      <input
+        class="field-input"
+        type="digit"
+        value="{{manualRatedAh}}"
+        placeholder="如 100"
+        bindinput="onRatedInput"
+      />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">日志</view>
+    <textarea
+      class="log"
+      value="{{logText}}"
+      maxlength="-1"
+      placeholder="粘贴 27930 充电日志，或点「用最近采集」"
+      bindinput="onLogInput"
+    />
+    <view class="btn-row">
+      <view class="btn-ghost" bindtap="onPasteLast">用最近采集</view>
+      <view class="btn-primary" bindtap="onAnalyze">开始测试</view>
+    </view>
+  </view>
+</view>

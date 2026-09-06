@@ -1,0 +1,223 @@
+<view class="page">
+  <!-- 顶区：品牌名 -->
+  <view class="hero">
+    <view class="hero-bg"></view>
+    <view class="hero-inner">
+      <view class="brand">异同镜</view>
+      <view class="tagline">双态采录，一眼见差</view>
+      <view class="rail">
+        <view
+          class="rail-item {{step===0?'on':''}} {{step>0?'done':''}}"
+          data-step="0"
+          bindtap="onGotoStep"
+        >引</view>
+        <view class="rail-line {{step>0?'on':''}}"></view>
+        <view
+          class="rail-item {{step===1?'on':''}} {{step>1?'done':''}} {{hasA?'filled':''}}"
+          data-step="1"
+          bindtap="onGotoStep"
+        >异</view>
+        <view class="rail-line {{step>1?'on':''}}"></view>
+        <view
+          class="rail-item {{step===2?'on':''}} {{step>2?'done':''}} {{hasB?'filled':''}}"
+          data-step="2"
+          bindtap="onGotoStep"
+        >常</view>
+        <view class="rail-line {{step>2?'on':''}}"></view>
+        <view
+          class="rail-item {{step===3?'on':''}}"
+          data-step="3"
+          bindtap="onGotoStep"
+        >镜</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 说明 -->
+  <block wx:if="{{step===0}}">
+    <view class="panel">
+      <view class="panel-title">三步看清差异</view>
+      <view class="flow">
+        <view class="flow-card tone-abn">
+          <view class="flow-mark">异</view>
+          <view class="flow-body">
+            <view class="flow-h">异常态</view>
+            <view class="flow-p">问题出现时采一段</view>
+          </view>
+        </view>
+        <view class="flow-card tone-ok">
+          <view class="flow-mark">常</view>
+          <view class="flow-body">
+            <view class="flow-h">正常态</view>
+            <view class="flow-p">恢复正常时再采一段</view>
+          </view>
+        </view>
+        <view class="flow-card tone-mirror">
+          <view class="flow-mark">镜</view>
+          <view class="flow-body">
+            <view class="flow-h">对照</view>
+            <view class="flow-p">找出独有 ID、数据与频率差</view>
+          </view>
+        </view>
+      </view>
+      <view class="hint">两段时长尽量接近；同一总线、同一工况下对比更准。支持 .txt / .log / .asc / .trc。</view>
+      <view class="btn-main" bindtap="onStartA">开始采异常态</view>
+      <view class="btn-text" bindtap="onLoadDemo">试用演示样本</view>
+    </view>
+
+    <view class="slot-preview" wx:if="{{hasA || hasB}}">
+      <view class="preview-row {{hasA?'ready':''}}">
+        <text class="preview-k">异常</text>
+        <text class="preview-v">{{metaA}}</text>
+      </view>
+      <view class="preview-row {{hasB?'ready':''}}">
+        <text class="preview-k">正常</text>
+        <text class="preview-v">{{metaB}}</text>
+      </view>
+      <view class="btn-ghost-ink" wx:if="{{hasA && hasB}}" bindtap="onGotoMirror">去对照</view>
+    </view>
+  </block>
+
+  <!-- 采集段 -->
+  <block wx:if="{{step===1 || step===2}}">
+    <view class="panel capture {{step===1?'is-abn':'is-ok'}}">
+      <view class="capture-head">
+        <view class="capture-badge">{{step===1 ? '异常态' : '正常态'}}</view>
+        <view class="capture-meta">{{step===1 ? metaA : metaB}}</view>
+      </view>
+      <view class="capture-sub">{{step===1 ? '现象异常时录入本段' : '现象正常时录入本段'}}</view>
+      <textarea
+        class="log-box"
+        value="{{step===1 ? textA : textB}}"
+        maxlength="-1"
+        placeholder="粘贴报文，或从本地/蓝牙导入"
+        bindinput="onLogInput"
+      />
+      <view class="action-row">
+        <view class="chip primary-chip" bindtap="onPickLocalFile">本地文件</view>
+        <view class="chip" bindtap="onImportBle">蓝牙导入</view>
+        <view class="chip" bindtap="onGoBle">去采集</view>
+        <view class="chip muted-chip" bindtap="onClearSlot">清空</view>
+      </view>
+      <view class="btn-main" bindtap="onNextFromSlot">
+        {{step===1 ? '存好，采正常态' : '存好，打开异同镜'}}
+      </view>
+    </view>
+  </block>
+
+  <!-- 对照结果 -->
+  <block wx:if="{{step===3}}">
+    <view class="panel" wx:if="{{!result}}">
+      <view class="empty">两段齐备后即可对照</view>
+      <view class="btn-main" bindtap="onRunCompare">打开异同镜</view>
+    </view>
+
+    <block wx:if="{{result}}">
+      <view class="panel result-hero">
+        <view class="result-title">对照结果</view>
+        <view class="duo">
+          <view class="duo-card abn">
+            <view class="duo-k">异常</view>
+            <view class="duo-n">{{result.sumA.frameCount}}</view>
+            <view class="duo-u">帧 · {{result.sumA.idCount}} ID</view>
+            <view class="duo-t">{{result.sumA.durationSec}}s</view>
+          </view>
+          <view class="duo-vs">对照</view>
+          <view class="duo-card ok">
+            <view class="duo-k">正常</view>
+            <view class="duo-n">{{result.sumB.frameCount}}</view>
+            <view class="duo-u">帧 · {{result.sumB.idCount}} ID</view>
+            <view class="duo-t">{{result.sumB.durationSec}}s</view>
+          </view>
+        </view>
+        <view class="metrics">
+          <view class="metric">
+            <view class="metric-n">{{result.diff.meta.onlyACount}}</view>
+            <view class="metric-l">独有异常</view>
+          </view>
+          <view class="metric">
+            <view class="metric-n">{{result.diff.meta.onlyBCount}}</view>
+            <view class="metric-l">独有正常</view>
+          </view>
+          <view class="metric">
+            <view class="metric-n">{{result.diff.meta.payloadCount}}</view>
+            <view class="metric-l">数据变</view>
+          </view>
+          <view class="metric">
+            <view class="metric-n">{{result.diff.meta.rateCount}}</view>
+            <view class="metric-l">频率差</view>
+          </view>
+        </view>
+        <view class="btn-ghost-ink" bindtap="onRunCompare">重新对照</view>
+      </view>
+
+      <view class="panel" wx:if="{{result.diff.highlights.length}}">
+        <view class="panel-title">焦点嫌疑</view>
+        <view class="suspect" wx:for="{{result.diff.highlights}}" wx:key="index">
+          <view class="suspect-bar {{item.tone}}"></view>
+          <view class="suspect-body">
+            <view class="suspect-top">
+              <text class="kind {{item.tone}}">{{item.kindLabel}}</text>
+              <text class="mono id">{{item.idHex || item.code}}</text>
+            </view>
+            <view class="suspect-label" wx:if="{{item.label}}">{{item.label}}</view>
+            <view class="suspect-hint">{{item.hint}}</view>
+            <view class="mono data-line" wx:if="{{item.topDataA || item.topDataB}}">
+              异 {{item.topDataA || '—'}}
+            </view>
+            <view class="mono data-line" wx:if="{{item.topDataA || item.topDataB}}">
+              常 {{item.topDataB || '—'}}
+            </view>
+            <view class="suspect-stat">×{{item.countA}} / ×{{item.countB}} · {{item.rateA}} vs {{item.rateB}} /s</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="panel" wx:if="{{result.diff.onlyA.length}}">
+        <view class="panel-title">仅异常有</view>
+        <view class="row-item" wx:for="{{result.diff.onlyA}}" wx:key="idHex" wx:if="{{index < showLimit}}">
+          <text class="mono id">{{item.idHex}}</text>
+          <text class="row-lbl">{{item.label || item.code || '—'}}</text>
+          <text class="row-cnt">×{{item.countA}}</text>
+        </view>
+      </view>
+
+      <view class="panel" wx:if="{{result.diff.onlyB.length}}">
+        <view class="panel-title">仅正常有</view>
+        <view class="row-item" wx:for="{{result.diff.onlyB}}" wx:key="idHex" wx:if="{{index < showLimit}}">
+          <text class="mono id">{{item.idHex}}</text>
+          <text class="row-lbl">{{item.label || item.code || '—'}}</text>
+          <text class="row-cnt">×{{item.countB}}</text>
+        </view>
+      </view>
+
+      <view class="panel" wx:if="{{result.diff.payloadChanged.length}}">
+        <view class="panel-title">同 ID · 数据不同</view>
+        <view class="suspect" wx:for="{{result.diff.payloadChanged}}" wx:key="idHex" wx:if="{{index < showLimit}}">
+          <view class="suspect-bar tone-chg"></view>
+          <view class="suspect-body">
+            <view class="suspect-top">
+              <text class="mono id">{{item.idHex}}</text>
+              <text class="row-lbl">{{item.label || item.code}}</text>
+            </view>
+            <view class="suspect-hint">{{item.hint}}</view>
+            <view class="mono data-line">异 {{item.topDataA}}</view>
+            <view class="mono data-line">常 {{item.topDataB}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="panel" wx:if="{{result.diff.rateChanged.length}}">
+        <view class="panel-title">同 ID · 频率差大</view>
+        <view class="row-item" wx:for="{{result.diff.rateChanged}}" wx:key="idHex" wx:if="{{index < showLimit}}">
+          <text class="mono id">{{item.idHex}}</text>
+          <text class="row-lbl">{{item.hint}}</text>
+        </view>
+      </view>
+
+      <view class="panel" wx:if="{{!result.diff.highlights.length}}">
+        <view class="empty">镜中未见明显差异。可加长采录，或确认两段工况是否一致。</view>
+      </view>
+    </block>
+  </block>
+</view>

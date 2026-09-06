@@ -1,0 +1,106 @@
+.page { padding-bottom: 48rpx; }
+.hero {
+  margin: 24rpx 24rpx 0;
+  padding: 28rpx 28rpx 24rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(145deg, #1a1f24 0%, #121418 70%);
+  color: #EDEFF2;
+}
+.hero-title { font-size: 34rpx; font-weight: 700; letter-spacing: 1rpx; }
+.hero-sub { margin-top: 8rpx; font-size: 26rpx; color: #9AA3AD; }
+.hero-note { margin-top: 14rpx; font-size: 22rpx; line-height: 1.5; color: #7A848E; }
+
+.tabs {
+  display: flex;
+  gap: 12rpx;
+  margin: 20rpx 24rpx 0;
+}
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  border-radius: 999rpx;
+  background: #FFFFFF;
+  color: #666;
+  font-size: 26rpx;
+  border: 1rpx solid #E8E8E8;
+}
+.tab.on {
+  background: #07C160;
+  color: #fff;
+  border-color: #07C160;
+  font-weight: 600;
+}
+
+.stage { padding: 12rpx; overflow: hidden; }
+.stage3d { padding: 16rpx 12rpx 12rpx; overflow: hidden; }
+.stage-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0 8rpx 12rpx;
+}
+.gun-canvas {
+  width: 100%;
+  display: block;
+  border-radius: 12rpx;
+  background: #EEF0F2;
+}
+.dim-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  padding: 12rpx 8rpx 4rpx;
+}
+.dim-chips text {
+  font-size: 20rpx;
+  color: #0A7A3E;
+  background: #F3FBF6;
+  padding: 6rpx 12rpx;
+  border-radius: 8rpx;
+}
+.iso { width: 100%; display: block; border-radius: 12rpx; background: #121418; }
+.iso.fallback { margin-top: 12rpx; background: #F5F6F8; }
+.hint { text-align: center; font-size: 22rpx; color: #999; padding: 10rpx 0 4rpx; }
+
+.dim-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid #F0F0F0;
+  font-size: 26rpx;
+}
+.dim-k { color: #666; }
+.dim-v { color: #222; font-weight: 600; }
+.order {
+  margin-top: 18rpx;
+  padding: 16rpx 18rpx;
+  border-radius: 12rpx;
+  background: #F3FBF6;
+  color: #0A7A3E;
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+
+.pin-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 12rpx 0;
+  border-bottom: 1rpx solid #F5F5F5;
+  font-size: 24rpx;
+}
+.pin-no {
+  width: 40rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+  text-align: center;
+  border-radius: 8rpx;
+  background: #EEF8F1;
+  color: #07C160;
+  font-weight: 700;
+}
+.pin-key { width: 80rpx; font-weight: 600; color: #222; }
+.pin-role { flex: 1; color: #666; }
+.pin-xy { color: #999; font-size: 22rpx; }
+.muted { margin-top: 12rpx; font-size: 22rpx; color: #999; }

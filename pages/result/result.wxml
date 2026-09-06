@@ -1,0 +1,66 @@
+<view class="page" wx:if="{{analysis && isVip}}">
+  <view class="verdict card" style="background:{{analysis.verdict.color}};">
+    <view class="v-label">{{analysis.verdict.label}}</view>
+    <view class="v-sum">{{analysis.verdict.summary}}</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">三维倾向强度</view>
+    <view class="score-row" wx:for="{{scoreBars}}" wx:key="key">
+      <text class="score-name">{{item.name}}</text>
+      <view class="score-track">
+        <view class="score-fill" style="width:{{item.pct}}%;background:{{item.color}};"></view>
+      </view>
+      <text class="score-val">{{item.val}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">建议操作</view>
+    <view class="advice" wx:for="{{analysis.advice}}" wx:key="*this">· {{item}}</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">依据</view>
+    <view class="ev" wx:for="{{analysis.evidence}}" wx:key="index">
+      <text class="tag tag-{{item.tag}}">{{item.tagLabel}}</text>
+      <text class="ev-text">{{item.text}}</text>
+    </view>
+    <view class="muted" wx:if="{{!analysis.evidence.length}}">暂无依据条目</view>
+  </view>
+
+  <view class="card" wx:if="{{timeline.length}}">
+    <view class="section-title">会话阶段时间线</view>
+    <view class="tl" wx:for="{{timeline}}" wx:key="index">
+      <text class="mono">{{item.code}}</text>
+      <text class="muted">{{item.stage}}</text>
+      <text>{{item.summary}}</text>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{logSummary}}">
+    <view class="section-title">日志摘要</view>
+    <view>总行数 {{logSummary.lineCount}} · 识别帧 {{logSummary.frameCount}}</view>
+    <view class="muted mono" style="margin-top:8rpx;">{{codeCountText}}</view>
+  </view>
+
+  <view class="footer-actions btn-row">
+    <view class="btn-ghost" bindtap="goHome">继续采集</view>
+    <view class="btn-ghost" bindtap="goIndex">看报文明细</view>
+  </view>
+</view>
+
+<view class="page" wx:elif="{{analysis && !isVip}}">
+  <view class="card lock-card">
+    <view class="free-title">{{freeTitle}}</view>
+    <view class="free-desc">{{freeDesc}}</view>
+    <view class="lock-tip">评分、依据、时间线、报文摘要为会员内容</view>
+    <view class="btn-primary" bindtap="goVip">开通会员查看详情</view>
+    <view class="btn-ghost" style="margin-top:16rpx;" bindtap="goHome">返回采集</view>
+  </view>
+</view>
+
+<view class="page card" wx:else>
+  <view class="muted">暂无分析结果。请先在「采集」或「连接」页完成分析。</view>
+  <view class="btn-primary" style="margin-top:24rpx;" bindtap="goHome">去采集</view>
+</view>

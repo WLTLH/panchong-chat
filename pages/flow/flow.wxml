@@ -1,0 +1,32 @@
+<view class="page">
+  <view class="card">
+    <view class="section-title">通信约定</view>
+    <view class="p">协议：GB/T 27930（2015 为主；2023 Category A 高度兼容）</view>
+    <view class="p">波特率：默认 250 kbit/s</view>
+    <view class="p">充电机 SA = 0x56；车辆/BMS SA = 0xF4（偶见 0xF5，同等视为车端）</view>
+    <view class="p">CAN ID：29 位扩展帧，J1939 风格 Priority|R|DP|PF|PS/DA|SA</view>
+    <view class="p">例：CHM 0x1826F456；BCL 0x181056F4</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">多帧传输 TP</view>
+    <view class="p">应用层 >8 字节走 J1939 TP（TP.CM + TP.DT，RTS/CTS）。必须重组后才能得到完整 BRM/BCP/BCS 等。</view>
+    <view class="p">未重组则电池类型、VIN 等会丢失；禁止用「待识别」糊弄已存在的 TP 数据。</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">电流与绝缘</view>
+    <view class="p">电流分辨率常见 0.1 A，偏移 -400 A；报文中充电多为负值。曲线展示用幅值 |I|。</view>
+    <view class="p">绝缘：通常只有 BSM 状态位（正常/异常），没有 kΩ 数值。禁止从 BCL/CCS「算出绝缘电阻」。</view>
+    <view class="p muted">科普：国标常用门槛约 R≥100 Ω/V × Umax，非本会话测得值。</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">阶段与报文</view>
+    <view class="stage" wx:for="{{stages}}" wx:key="title">
+      <view class="st">{{item.title}}</view>
+      <view class="muted">{{item.codes}}</view>
+      <view class="p">{{item.desc}}</view>
+    </view>
+  </view>
+</view>

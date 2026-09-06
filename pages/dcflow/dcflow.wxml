@@ -1,0 +1,127 @@
+<view class="page">
+  <view class="battery-banner" wx:if="{{batteryCollectMode}}">
+    <view class="battery-banner-title">{{batteryCollectTitle}}</view>
+    <view class="battery-banner-sub">正在后台记录充电数据，不影响正常使用</view>
+    <view class="battery-finish" bindtap="onFinishBatteryCollect">充电够了，去看报告</view>
+  </view>
+
+  <view class="hero">
+    <view class="brand">判充</view>
+    <view class="headline">连接</view>
+  </view>
+
+  <view class="sim-digest" wx:if="{{connected && (isSimulator || frameCount > 0)}}">
+    <view class="sim-digest-tag" wx:if="{{isSimulator}}">模拟</view>
+    <view class="sim-digest-head">{{digestHeadline || (frameCount ? '解析中…' : '等待报文')}}</view>
+    <view class="sim-digest-verdict" wx:if="{{digestVerdict}}">裁决：{{digestVerdict}}</view>
+    <view class="sim-digest-row" wx:for="{{digestRows}}" wx:key="label">
+      <text class="sim-digest-k">{{item.label}}</text>
+      <text class="sim-digest-v">{{item.value}}</text>
+    </view>
+    <view class="sim-alert" wx:for="{{digestAlerts}}" wx:key="code">
+      <text class="sim-alert-code">{{item.code}}</text>
+      <text class="sim-alert-time">{{item.time}}</text>
+      <text class="sim-alert-data mono">{{item.data}}</text>
+      <text class="sim-alert-text" wx:if="{{item.text}}">{{item.text}}</text>
+    </view>
+  </view>
+
+  <view class="veh-card" wx:if="{{connected}}">
+    <view class="veh-glow"></view>
+    <view class="veh-inner">
+      <view class="veh-head">
+        <view class="veh-head-l">
+          <view class="veh-kicker">VEHICLE</view>
+          <view class="veh-title">车辆信息</view>
+        </view>
+        <view class="veh-badge {{vehicle.charging ? 'on' : ''}}">
+          {{vehicle.charging ? '充电中' : (vehicle.hasData ? '已识别' : '等待报文')}}
+        </view>
+      </view>
+
+      <view class="veh-grid">
+        <view class="soc-block">
+          <view class="soc-ring-wrap">
+            <view class="soc-ring" style="{{vehicle.ringStyle}}">
+              <view class="soc-core">
+                <text class="soc-num">{{vehicle.socDisplay}}</text>
+                <text class="soc-unit" wx:if="{{vehicle.socPct > 0}}">SOC</text>
+              </view>
+            </view>
+          </view>
+          <view class="soc-label">剩余电量</view>
+        </view>
+
+        <view class="veh-metrics">
+          <view class="metric metric-current">
+            <view class="metric-icon metric-icon-amp">I</view>
+            <view class="metric-body">
+              <view class="metric-val-row">
+                <text class="metric-val">{{vehicle.currentText}}</text>
+                <text class="metric-unit" wx:if="{{vehicle.currentUnit}}">{{vehicle.currentUnit}}</text>
+              </view>
+              <view class="metric-key">充电电流</view>
+              <view class="metric-sub">{{vehicle.currentSub}}</view>
+            </view>
+          </view>
+
+          <view class="metric metric-vin">
+            <view class="metric-icon">#</view>
+            <view class="metric-body">
+              <text class="metric-vin mono" selectable="true">{{vehicle.vinText}}</text>
+              <view class="metric-key">车架号 VIN</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="panel">
+    <view class="row">
+      <text class="label">采集盒</text>
+      <text class="value {{hwOk ? 'ok' : 'bad'}}">{{hwText}}</text>
+    </view>
+
+    <view class="gun-block">
+      <view class="row bare">
+        <text class="label">插枪通信</text>
+        <text class="value {{gunOk ? 'ok' : (hwOk ? 'warn' : 'mute')}}">{{gunText}}</text>
+      </view>
+      <view class="stages" wx:if="{{hwOk && gunStages.length}}">
+        <view class="stage stage-{{item.status}}" wx:for="{{gunStages}}" wx:key="key">
+          <text class="dot"></text>
+          <text class="st-title">{{item.title}}</text>
+          <text class="st-codes" wx:if="{{item.seenText}}">{{item.seenText}}</text>
+        </view>
+      </view>
+      <view class="gun-note" wx:if="{{gunNote && (isVip || isSimulator)}}">{{gunNote}}</view>
+      <view class="gun-note" wx:elif="{{gunNote && !isVip && !isSimulator}}">阶段进度可看；报文细项需会员</view>
+    </view>
+
+    <view class="row">
+      <text class="label">报文</text>
+      <text class="value {{frameCount ? 'ok' : 'mute'}}">{{frameText}}</text>
+    </view>
+  </view>
+
+  <view class="hint hint-{{hintTone}}" wx:if="{{hintText}}">{{hintText}}</view>
+
+  <view class="cta-wrap">
+    <view class="cta" bindtap="onOneTap" wx:if="{{!busy}}">{{ctaText}}</view>
+    <view class="cta dim" wx:else>{{busyText}}</view>
+  </view>
+
+  <view class="result tone-{{verdictTone}}" wx:if="{{verdictTitle}}">
+    <view class="result-label">{{isVip ? '详细倾向' : '免费结论'}}</view>
+    <view class="result-title">{{verdictTitle}}</view>
+    <view class="result-desc">{{verdictDesc}}</view>
+    <view class="result-actions">
+      <view class="link" bindtap="onOpenFlow" wx:if="{{isVip}}">查看详细结果</view>
+      <view class="link vip" bindtap="onOpenVip" wx:else>开通会员看详情</view>
+      <view class="link muted-link" bindtap="onDisconnect" wx:if="{{connected}}">断开</view>
+    </view>
+  </view>
+
+  <view class="foot note">免费：车端 / 桩端 / 换桩 · 详情会员 · 辅助倾向不定责</view>
+</view>

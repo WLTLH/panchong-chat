@@ -1,0 +1,19 @@
+node_modules/
+**/node_modules/
+.DS_Store
+*.log
+.idea/
+.vscode/
+miniprogram_npm/
+package-lock.json
+
+# local / bulky
+data/
+refs/
+微信开发者工具/
+*.exe
+*.zip
+*.rar
+
+# private local tool state
+project.private.config.json

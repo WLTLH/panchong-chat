@@ -1,0 +1,91 @@
+<view class="page">
+  <!-- 已登录：资料卡 -->
+  <view class="card profile-card" wx:if="{{loggedIn}}">
+    <view class="profile-row">
+      <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+        <image
+          class="avatar"
+          src="{{avatarUrl || '/assets/tab/mine.png'}}"
+          mode="aspectFill"
+        />
+      </button>
+      <view class="profile-info">
+        <input
+          class="nick-input"
+          type="nickname"
+          placeholder="点击填写昵称"
+          value="{{nickName}}"
+          bindblur="onNickInput"
+        />
+        <view class="uid mono">ID {{userId}}</view>
+        <view class="login-time muted">登录 {{loginAtText}}</view>
+      </view>
+      <view class="vip-badge {{isVip?'vip-on':''}}">{{vipLabel}}</view>
+    </view>
+    <view class="btn-row">
+      <view class="btn-ghost" bindtap="onLogout">退出登录</view>
+    </view>
+  </view>
+
+  <!-- 未登录：注册 / 登录 -->
+  <view class="card auth-card" wx:else>
+    <view class="auth-tabs">
+      <view
+        class="auth-tab {{authTab === 'register' ? 'active' : ''}}"
+        data-tab="register"
+        bindtap="onAuthTab"
+      >注册</view>
+      <view
+        class="auth-tab {{authTab === 'login' ? 'active' : ''}}"
+        data-tab="login"
+        bindtap="onAuthTab"
+      >登录</view>
+    </view>
+
+    <view class="auth-body">
+      <image class="auth-logo" src="/assets/tab/mine.png" mode="aspectFit" />
+      <view class="auth-title">{{authTab === 'register' ? '注册账号' : '登录账号'}}</view>
+      <view class="auth-hint muted">
+        {{authTab === 'register' ? '使用微信一键注册，无需密码' : '使用微信登录已注册账号'}}
+      </view>
+      <view
+        class="btn-wechat"
+        bindtap="onWeChatAuth"
+      >
+        <text class="wechat-mark">微</text>
+        微信{{authTab === 'register' ? '一键注册' : '登录'}}
+      </view>
+      <view class="auth-foot muted" wx:if="{{isRegistered && authTab === 'login'}}">
+        已注册 ID {{maskedUserId}}
+      </view>
+      <view class="auth-foot muted" wx:if="{{isRegistered && authTab === 'register'}}">
+        本机已注册，请切换到「登录」
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">账号</view>
+    <view class="menu-item" bindtap="onGoVip">
+      <view class="menu-k">会员中心</view>
+      <view class="menu-v">{{isVip ? '已开通' : '免费版 · 去开通'}}</view>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="onGoBle">
+      <view class="menu-k">采集盒连接</view>
+      <view class="menu-v">{{bleConnected ? '已连接' : '未连接'}}</view>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="onGoHome">
+      <view class="menu-k">采集分析</view>
+      <view class="menu-v muted">日志粘贴与诊断</view>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <view class="card about">
+    <view class="section-title">关于</view>
+    <view>{{appName}} v{{version}}</view>
+    <view class="muted about-desc">GB/T 27930 现场采集辅助。倾向判断不定责，不替代官方诊断。</view>
+  </view>
+</view>

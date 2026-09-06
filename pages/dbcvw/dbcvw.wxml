@@ -1,0 +1,342 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-bg"></view>
+    <view class="hero-inner">
+      <view class="brand">矩览</view>
+      <view class="tagline">载入 DBC，搜信号画曲线</view>
+    </view>
+  </view>
+
+  <!-- 未加载 -->
+  <block wx:if="{{!result}}">
+    <view class="panel">
+      <view class="panel-title">从微信聊天选 DBC</view>
+      <view class="guide">
+        <view class="guide-step">
+          <view class="guide-n">1</view>
+          <view class="guide-t">点下方绿色按钮</view>
+        </view>
+        <view class="guide-step">
+          <view class="guide-n">2</view>
+          <view class="guide-t">选「从聊天记录选择」→ 点上方「文件」标签（不是图片）</view>
+        </view>
+        <view class="guide-step">
+          <view class="guide-n">3</view>
+          <view class="guide-t">找到 .dbc / .log / .txt 等文件，点开即可解析</view>
+        </view>
+      </view>
+      <view class="tip-box">同事需以「文件」形式发到聊天（非图片）。也支持本机选文件（新微信）。</view>
+      <view class="btn-main chat" bindtap="onPickChatFile">
+        <text class="chat-ico">💬</text>
+        <text>从微信聊天选择</text>
+      </view>
+      <view class="last-hint" wx:if="{{lastFileName}}">上次打开：{{lastFileName}}</view>
+      <view class="btn-ghost" bindtap="onTogglePaste">{{showPaste ? '收起粘贴' : '粘贴 DBC 文本'}}</view>
+      <view class="btn-text" bindtap="onLoadDemo">试用演示矩阵</view>
+      <block wx:if="{{showPaste}}">
+        <textarea
+          class="paste-box"
+          value="{{pasteText}}"
+          maxlength="-1"
+          placeholder="粘贴完整 DBC 文本…"
+          bindinput="onPasteInput"
+        />
+        <view class="btn-main soft" bindtap="onParsePaste">解析粘贴内容</view>
+      </block>
+    </view>
+  </block>
+
+  <!-- 已加载 -->
+  <block wx:if="{{result}}">
+    <view class="panel overview">
+      <view class="file-row">
+        <view class="file-name">{{fileName}}</view>
+        <view class="file-enc" wx:if="{{encoding}}">{{encoding}}</view>
+      </view>
+      <view class="stat-grid">
+        <view class="stat">
+          <view class="stat-n">{{result.messageCount}}</view>
+          <view class="stat-l">报文</view>
+        </view>
+        <view class="stat">
+          <view class="stat-n">{{result.signalCount}}</view>
+          <view class="stat-l">信号</view>
+        </view>
+        <view class="stat">
+          <view class="stat-n">{{result.nodeCount}}</view>
+          <view class="stat-l">节点</view>
+        </view>
+      </view>
+      <view class="nodes" wx:if="{{result.nodes.length}}">
+        <text class="nodes-k">节点</text>
+        <text class="nodes-v">{{nodesText}}</text>
+      </view>
+      <view class="warn" wx:for="{{result.warnings}}" wx:key="*this">{{item}}</view>
+      <view class="action-row">
+        <view class="chip primary" bindtap="onPickChatFile">从聊天换文件</view>
+        <view class="chip" bindtap="onReset">清空返回</view>
+        <view class="chip" bindtap="onLoadDemo">演示</view>
+      </view>
+    </view>
+
+    <view class="mode-tabs">
+      <view
+        class="mode-tab {{viewMode==='matrix'?'on':''}}"
+        data-mode="matrix"
+        bindtap="onSwitchMode"
+      >矩阵浏览</view>
+      <view
+        class="mode-tab {{viewMode==='live'?'on':''}}"
+        data-mode="live"
+        bindtap="onSwitchMode"
+      >实时解码</view>
+      <view
+        class="mode-tab {{viewMode==='chart'?'on':''}}"
+        data-mode="chart"
+        bindtap="onSwitchMode"
+      >信号曲线</view>
+    </view>
+
+    <view class="panel live-bar" wx:if="{{viewMode==='live'}}">
+      <view class="src-tabs">
+        <view
+          class="src-tab {{liveSource==='ble'?'on':''}}"
+          data-src="ble"
+          bindtap="onSwitchLiveSource"
+        >蓝牙采集</view>
+        <view
+          class="src-tab {{liveSource==='local'?'on':''}}"
+          data-src="local"
+          bindtap="onSwitchLiveSource"
+        >本地报文</view>
+      </view>
+
+      <block wx:if="{{liveSource==='ble'}}">
+        <view class="live-status">
+          <view class="dot {{bleConnected?'on':''}}"></view>
+          <text>{{bleConnected ? '采集盒已连接' : '未连接采集盒'}}</text>
+          <text class="live-stat">· 会话 {{bleFrameCount}} 行</text>
+        </view>
+        <view class="action-row">
+          <view class="chip primary" bindtap="onGoBle">{{bleConnected ? '去连接页' : '去连接'}}</view>
+          <view class="chip" bindtap="onImportBleLog">导入当前会话</view>
+          <view class="chip" bindtap="onResyncLive">重新解码</view>
+        </view>
+        <view class="live-hint" wx:if="{{!bleConnected}}">连上采集盒后自动解信号；也可先把会话导入「本地报文」。</view>
+      </block>
+
+      <block wx:if="{{liveSource==='local'}}">
+        <view class="live-status">
+          <text class="log-file">{{logFileName || '未加载报文文件'}}</text>
+          <text class="live-stat" wx:if="{{logLineCount}}">· {{logLineCount}} 行</text>
+        </view>
+        <view class="action-row">
+          <view class="chip primary chat-chip" bindtap="onPickLogFile">从聊天选报文</view>
+          <view class="chip" bindtap="onToggleLogPaste">{{showLogPaste ? '收起粘贴' : '粘贴报文'}}</view>
+          <view class="chip" bindtap="onImportBleLog">导入蓝牙会话</view>
+        </view>
+        <view class="last-hint" wx:if="{{lastLogFileName && !logFileName}}">上次：{{lastLogFileName}}</view>
+        <block wx:if="{{showLogPaste}}">
+          <textarea
+            class="paste-box"
+            value="{{logPasteText}}"
+            maxlength="-1"
+            placeholder="粘贴 CAN 报文日志…"
+            bindinput="onLogPasteInput"
+          />
+          <view class="btn-main soft" bindtap="onParseLogPaste">解码粘贴内容</view>
+        </block>
+      </block>
+
+      <view class="live-metrics">
+        <text>已匹配 {{liveMatched}}</text>
+        <text>未定义 {{liveUnknown}}</text>
+      </view>
+      <view class="action-row">
+        <view class="chip" bindtap="onClearLive">清空列表</view>
+        <view class="chip {{liveMatchedOnly?'primary':''}}" bindtap="onToggleMatchedOnly">仅已匹配</view>
+      </view>
+    </view>
+
+    <block wx:if="{{viewMode==='matrix'}}">
+    <view class="panel filters">
+      <view class="search-wrap">
+        <input
+          class="search"
+          value="{{query}}"
+          placeholder="搜 ID / 报文名 / 信号名"
+          confirm-type="search"
+          bindinput="onQuery"
+        />
+      </view>
+      <scroll-view scroll-x class="tag-scroll" show-scrollbar="{{false}}">
+        <view class="tag-row">
+        <view
+          class="tag {{activeTag===''?'on':''}}"
+          data-tag=""
+          bindtap="onTag"
+        >全部 {{result.messageCount}}</view>
+        <view
+          class="tag {{activeTag===item.id?'on':''}}"
+          wx:for="{{result.tagList}}"
+          wx:key="id"
+          data-tag="{{item.id}}"
+          bindtap="onTag"
+        >{{item.label}} {{item.count}}</view>
+        </view>
+      </scroll-view>
+      <view class="list-hint">显示 {{filtered.length}} 条</view>
+    </view>
+
+    <view class="msg-list">
+      <view
+        class="msg-card"
+        wx:for="{{filtered}}"
+        wx:key="idHex"
+        data-index="{{item._idx}}"
+        bindtap="onOpenMsg"
+      >
+        <view class="msg-top">
+          <text class="mono id">{{item.idHex}}</text>
+          <text class="dlc">DLC {{item.dlc}}</text>
+          <text class="cycle" wx:if="{{item.cycleMs}}">{{item.cycleMs}}ms</text>
+        </view>
+        <view class="msg-name">{{item.name}}</view>
+        <view class="msg-sub">
+          <text>{{item.sender}}</text>
+          <text>· {{item.signalCount}} 信号</text>
+        </view>
+        <view class="msg-tags" wx:if="{{item.tagLabels.length}}">
+          <text class="mini-tag" wx:for="{{item.tagLabels}}" wx:for-item="tl" wx:key="*this">{{tl}}</text>
+        </view>
+      </view>
+    </view>
+    </block>
+
+    <block wx:if="{{viewMode==='live'}}">
+      <view class="live-list" wx:if="{{liveFeed.length}}">
+        <view
+          class="live-row {{item.matched?'ok':'unk'}}"
+          wx:for="{{liveFeed}}"
+          wx:key="key"
+          data-index="{{index}}"
+          bindtap="onOpenLive"
+        >
+          <view class="live-top">
+            <text class="mono id">{{item.idHex}}</text>
+            <text class="live-time" wx:if="{{item.timeText}}">{{item.timeText}}</text>
+          </view>
+          <view class="live-name">{{item.name}}</view>
+          <view class="live-sum">{{item.summary}}</view>
+        </view>
+      </view>
+      <view class="panel empty-live" wx:else>
+        <view class="empty">{{liveSource==='local' ? '请加载本地报文' : '等待采集报文…'}}</view>
+        <view class="muted" wx:if="{{liveSource==='ble'}}">连接采集盒后，新到的 CAN 行会按当前 DBC 自动解出信号。</view>
+        <view class="muted" wx:if="{{liveSource==='local'}}">支持 .txt / .log / .asc / .trc，可从微信聊天选择、粘贴或导入蓝牙会话。</view>
+        <view class="btn-main soft" wx:if="{{liveSource==='local'}}" style="margin-top:20rpx;" bindtap="onPickLogFile">从聊天选报文</view>
+      </view>
+    </block>
+
+    <block wx:if="{{viewMode==='chart'}}">
+      <view class="panel chart-panel">
+        <view class="panel-title">搜索信号</view>
+        <view class="search-wrap">
+          <input
+            class="search"
+            value="{{signalSearchQuery}}"
+            placeholder="搜信号名 / 报文名 / ID"
+            confirm-type="search"
+            bindinput="onSignalSearch"
+          />
+        </view>
+        <view class="chart-log-hint" wx:if="{{!hasLogForChart}}">
+          请先在「实时解码」加载本地报文或蓝牙会话，再添加曲线。
+        </view>
+        <scroll-view scroll-y class="sig-search-list" wx:if="{{signalSearchResults.length}}">
+          <view class="sig-search-item" wx:for="{{signalSearchResults}}" wx:key="key">
+            <view class="sig-search-body" data-key="{{item.key}}" bindtap="onAddChartSignal">
+              <view class="sig-search-name">{{item.sigName}}</view>
+              <view class="sig-search-sub mono">{{item.idHex}} · {{item.msgName}}</view>
+            </view>
+            <view class="sig-add" data-key="{{item.key}}" bindtap="onAddChartSignal">+</view>
+          </view>
+        </scroll-view>
+        <view class="muted" wx:elif="{{signalSearchQuery}}">未找到匹配信号</view>
+      </view>
+
+      <view class="panel chart-panel" wx:if="{{chartSignals.length}}">
+        <view class="chart-head">
+          <view class="panel-title">曲线</view>
+          <view class="chart-actions">
+            <text class="link" bindtap="onRefreshChart">刷新</text>
+            <text class="link" bindtap="onClearChart">清空</text>
+          </view>
+        </view>
+        <view class="chart-legend">
+          <view
+            class="leg-item {{focusSignalKey===item.key?'on':''}}"
+            wx:for="{{chartSignals}}"
+            wx:key="key"
+            data-key="{{item.key}}"
+            bindtap="onFocusChartSignal"
+          >
+            <view class="leg-dot" style="background:{{item.color}};"></view>
+            <text class="leg-text">{{item.sigName}}</text>
+            <text class="leg-x" data-key="{{item.key}}" catchtap="onRemoveChartSignal">×</text>
+          </view>
+        </view>
+        <view class="chart-hint">{{chartHint}}</view>
+        <canvas canvas-id="dbcChart" class="dbc-canvas" style="width:{{canvasW}}px;height:{{canvasH}}px;"></canvas>
+        <view class="chart-last mono" wx:if="{{chartPointText}}">{{chartPointText}}</view>
+        <view class="muted chart-tip">点图例可只看一条；再点恢复全部</view>
+      </view>
+    </block>
+  </block>
+
+  <!-- 矩阵 / 实时详情 -->
+  <view class="drawer-mask" wx:if="{{detail || liveDetail}}" bindtap="onCloseDetail"></view>
+  <view class="drawer {{detail || liveDetail?'show':''}}" wx:if="{{detail || liveDetail}}">
+    <view class="drawer-handle" bindtap="onCloseDetail"></view>
+    <block wx:if="{{detail}}">
+    <view class="drawer-head">
+      <text class="mono id">{{detail.idHex}}</text>
+      <text class="drawer-name">{{detail.name}}</text>
+    </view>
+    <view class="drawer-meta">
+      发送 {{detail.sender}} · DLC {{detail.dlc}}
+      <text wx:if="{{detail.cycleMs}}"> · {{detail.cycleMs}}ms</text>
+    </view>
+    <view class="drawer-cm" wx:if="{{detail.comment}}">{{detail.comment}}</view>
+    <scroll-view scroll-y class="drawer-scroll">
+      <view class="sig" wx:for="{{detail.signals}}" wx:key="name">
+        <view class="sig-name">{{item.name}}</view>
+        <view class="sig-line mono">
+          {{item.startBit}}|{{item.length}} @{{item.byteOrder==='Intel'?'1':'0'}}{{item.signed?'-':'+'}}
+          ({{item.factor}},{{item.offset}}) [{{item.min}}|{{item.max}}]
+          <text wx:if="{{item.unit}}"> "{{item.unit}}"</text>
+        </view>
+        <view class="sig-cm" wx:if="{{item.comment}}">{{item.comment}}</view>
+        <view class="sig-val" wx:if="{{item.valueTable.length}}">
+          <text wx:for="{{item.valueTable}}" wx:for-item="v" wx:key="value">{{v.value}}={{v.label}} </text>
+        </view>
+      </view>
+    </scroll-view>
+    </block>
+    <block wx:if="{{liveDetail}}">
+    <view class="drawer-head">
+      <text class="mono id">{{liveDetail.idHex}}</text>
+      <text class="drawer-name">{{liveDetail.name}}</text>
+    </view>
+    <view class="drawer-meta mono">{{liveDetail.dataHex}}</view>
+    <scroll-view scroll-y class="drawer-scroll">
+      <view class="sig live-sig" wx:for="{{liveDetail.signals}}" wx:key="name">
+        <view class="sig-name">{{item.name}}</view>
+        <view class="live-val">{{item.text}}</view>
+        <view class="sig-line mono">raw {{item.raw}}<text wx:if="{{item.unit}}"> · {{item.unit}}</text></view>
+        <view class="sig-cm" wx:if="{{item.comment}}">{{item.comment}}</view>
+      </view>
+    </scroll-view>
+    </block>
+  </view>
+</view>

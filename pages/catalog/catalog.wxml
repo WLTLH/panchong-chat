@@ -1,0 +1,36 @@
+<view class="page">
+  <view class="card">
+    <input class="search" placeholder="搜索代号/名称/厂家" value="{{q}}" bindinput="onSearch"/>
+    <view class="muted" style="margin-bottom:12rpx;">直流相关 ID 均标注厂家；国标=GB/T27930</view>
+    <scroll-view scroll-x class="stages">
+      <view
+        class="stage-chip {{manufacturer===item?'on':''}}"
+        wx:for="{{manufacturers}}"
+        wx:key="*this"
+        data-mfr="{{item}}"
+        bindtap="onMfr"
+      >{{item}}</view>
+    </scroll-view>
+    <scroll-view scroll-x class="stages" style="margin-top:12rpx;">
+      <view
+        class="stage-chip {{stage===item?'on':''}}"
+        wx:for="{{stages}}"
+        wx:key="*this"
+        data-stage="{{item}}"
+        bindtap="onStage"
+      >{{item}}</view>
+    </scroll-view>
+  </view>
+
+  <view class="card list-card">
+    <view class="row" wx:for="{{list}}" wx:key="key" data-code="{{item.code}}" bindtap="onOpen">
+      <view class="row-top">
+        <text class="code">{{item.code}}</text>
+        <text class="name">{{item.name}}</text>
+      </view>
+      <view class="mfr">厂家：{{item.manufacturer}}</view>
+      <view class="muted">{{item.stage}} · {{item.direction}} · {{item.pgn || ''}} · DLC {{item.dlc}}</view>
+    </view>
+    <view class="muted" wx:if="{{!list.length}}">无匹配报文</view>
+  </view>
+</view>

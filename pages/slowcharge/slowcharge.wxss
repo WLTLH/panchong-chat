@@ -1,0 +1,108 @@
+.page {
+  padding: 24rpx 24rpx 48rpx;
+  box-sizing: border-box;
+  background: #F5F6F8;
+  min-height: 100vh;
+}
+.hint {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.55;
+  margin-bottom: 20rpx;
+}
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+.section-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  margin-bottom: 16rpx;
+  color: #222;
+}
+.demo {
+  padding: 18rpx 20rpx;
+  border-radius: 12rpx;
+  background: #F7F8FA;
+  margin-bottom: 12rpx;
+  border: 2rpx solid transparent;
+}
+.demo.on {
+  background: #E8F8EF;
+  border-color: #07C160;
+}
+.demo-title { font-size: 28rpx; font-weight: 600; color: #222; }
+.demo-desc { font-size: 22rpx; color: #888; margin-top: 6rpx; }
+
+.verdict {
+  border-radius: 14rpx;
+  padding: 22rpx 20rpx;
+  color: #fff;
+}
+.v-label { font-size: 32rpx; font-weight: 800; margin-bottom: 10rpx; }
+.v-sum { font-size: 26rpx; line-height: 1.5; opacity: 0.95; }
+.v-disc { font-size: 20rpx; margin-top: 12rpx; opacity: 0.75; }
+
+.num {
+  display: flex;
+  justify-content: space-between;
+  padding: 10rpx 0;
+  border-bottom: 1rpx solid #F0F0F0;
+  font-size: 26rpx;
+}
+.num-k { color: #666; }
+.num-v { font-weight: 600; color: #222; font-variant-numeric: tabular-nums; }
+
+.ev {
+  display: flex;
+  gap: 12rpx;
+  align-items: flex-start;
+  margin-bottom: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.45;
+}
+.tag {
+  flex-shrink: 0;
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  color: #fff;
+  background: #8A8A8A;
+}
+.tag-pile { background: #07C160; }
+.tag-vehicle { background: #2F6BFF; }
+.tag-neutral { background: #8A8A8A; }
+.ev-text { color: #333; flex: 1; }
+.advice { font-size: 24rpx; color: #444; line-height: 1.5; margin-bottom: 8rpx; }
+
+.log {
+  width: 100%;
+  min-height: 220rpx;
+  box-sizing: border-box;
+  background: #F7F8FA;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  font-size: 22rpx;
+  font-family: Consolas, Monaco, monospace;
+  margin-bottom: 16rpx;
+}
+.btn-row {
+  display: flex;
+  gap: 16rpx;
+}
+.btn-primary, .btn-ghost {
+  flex: 1;
+  text-align: center;
+  padding: 18rpx 0;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+.btn-primary { background: #07C160; color: #fff; }
+.btn-ghost {
+  background: #fff;
+  color: #07C160;
+  border: 2rpx solid #07C160;
+}

@@ -1,0 +1,60 @@
+<view class="page">
+  <view class="hero card">
+    <view class="hero-title">插枪测试 · 采集数据</view>
+    <view class="muted">先记录现场可观察事实，再补充 27930 通信日志。结论为倾向建议，不定责。</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">1. 本次测试类型</view>
+    <view class="type-row">
+      <view class="type-card {{chargeType==='ac'?'on':''}}" data-type="ac" bindtap="onSelectType">交流慢充</view>
+      <view class="type-card {{chargeType==='dc'?'on':''}}" data-type="dc" bindtap="onSelectType">直流快充</view>
+    </view>
+    <view class="muted tip">{{chargeType==='ac'?'交流通常无 27930，主要靠现象。':'直流有 CAN 日志时价值最大。'}}</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">2. 现象多选</view>
+    <checkbox-group bindchange="onObsChange">
+      <label class="obs-item" wx:for="{{obsOptions}}" wx:key="id">
+        <checkbox value="{{item.id}}" checked="{{item.checked}}" color="#07C160"/>
+        <text>{{item.label}}</text>
+      </label>
+    </checkbox-group>
+  </view>
+
+  <view class="card">
+    <view class="section-title">3. 通信记录</view>
+    <textarea
+      class="log-area mono"
+      placeholder="每行一帧，如：1826F456 01 01 00&#10;可选时间戳：12:34:56.789 1826F456 01 01 00"
+      value="{{logDisplay}}"
+      bindinput="onLogInput"
+      maxlength="-1"
+      auto-height="{{false}}"
+    />
+    <view class="muted" wx:if="{{logFullCount}}">已载入全量 {{logFullCount}} 行（框内可编辑；分析使用全量文本）</view>
+    <view class="btn-row" style="margin-top:16rpx;">
+      <view class="btn-ghost" bindtap="onOpenBle">去连接</view>
+      <view class="btn-ghost" bindtap="onFillDemo">填入演示</view>
+      <view class="btn-ghost" bindtap="onFillCaseVin1070">回放 vin1070</view>
+      <view class="btn-ghost" bindtap="onClearLog">清空</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">4. 备注</view>
+    <textarea
+      class="note-area"
+      placeholder="桩品牌、站名、失败时刻、车机原文等"
+      value="{{note}}"
+      bindinput="onNoteInput"
+      maxlength="500"
+    />
+  </view>
+
+  <view class="footer-actions">
+    <view class="btn-primary" bindtap="onAnalyze">开始分析 · 判桩/车</view>
+    <view class="disclaimer muted">辅助判断，不替代官方诊断与定责。文案表述为「倾向 / 建议换桩复核」。</view>
+  </view>
+</view>

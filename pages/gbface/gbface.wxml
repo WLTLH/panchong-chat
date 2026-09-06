@@ -1,0 +1,64 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-title">{{standard}}</view>
+    <view class="hero-sub">车辆插头三维 · 按图9空间尺寸</view>
+    <view class="hero-note">{{note}}</view>
+  </view>
+
+  <view class="tabs">
+    <view
+      class="tab {{tab===item.id?'on':''}}"
+      wx:for="{{tabs}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="onTab"
+    >{{item.title}}</view>
+  </view>
+
+  <!-- 三维模型（图9） -->
+  <view class="card stage3d" wx:if="{{tab==='model3d'}}">
+    <view class="stage-head">
+      <text class="section-title">三维模型</text>
+      <text class="muted">拖动旋转 · {{modelReady?'WebGL':'加载中…'}}</text>
+    </view>
+    <canvas
+      type="webgl"
+      id="gunCanvas"
+      class="gun-canvas"
+      style="width:{{canvasW}}px;height:{{canvasH}}px;"
+      bindtouchstart="onTouchStart"
+      bindtouchmove="onTouchMove"
+    ></canvas>
+    <view class="dim-chips">
+      <text wx:for="{{spaceDims}}" wx:key="k">{{item.k}} {{item.v}}</text>
+    </view>
+    <image class="iso fallback" src="/assets/connect/gb_gun_lin.jpg" mode="widthFix" bindtap="onPreviewGun" />
+    <view class="hint">上：可旋转 · 下：工程渲染（点按放大）</view>
+  </view>
+
+  <!-- 平面透视示意 -->
+  <view class="card stage" wx:else bindtap="onPreview">
+    <image class="iso" src="{{imgSrc}}" mode="widthFix" />
+    <view class="hint">点按可放大预览</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">图9 空间尺寸（名义）</view>
+    <view class="dim-row" wx:for="{{spaceDims}}" wx:key="k">
+      <text class="dim-k">{{item.k}}</text>
+      <text class="dim-v">{{item.v}}</text>
+    </view>
+    <view class="order">耦合顺序：{{coupleOrder}}</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">触头一览</view>
+    <view class="pin-row" wx:for="{{contacts}}" wx:key="key">
+      <text class="pin-no">{{item.no}}</text>
+      <text class="pin-key">{{item.key}}</text>
+      <text class="pin-role">{{item.role}}</text>
+      <text class="pin-xy">{{item.x}}, {{item.y}}</text>
+    </view>
+    <view class="muted">坐标：PE 原点 · 锁止方向 +Y · 单位 mm</view>
+  </view>
+</view>

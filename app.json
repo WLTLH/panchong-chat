@@ -1,0 +1,68 @@
+{
+  "pages": [
+    "pages/dcflow/dcflow",
+    "pages/dcchart/dcchart",
+    "pages/tools/tools",
+    "pages/mine/mine",
+    "pages/home/home",
+    "pages/abcompare/abcompare",
+    "pages/dbcvw/dbcvw",
+    "pages/verdictguide/verdictguide",
+    "pages/circuit/circuit",
+    "pages/blebox/blebox",
+    "pages/result/result",
+    "pages/caseplay/caseplay",
+    "pages/gbface/gbface",
+    "pages/index/index",
+    "pages/catalog/catalog",
+    "pages/detail/detail",
+    "pages/flow/flow",
+    "pages/slowcharge/slowcharge",
+    "pages/captest/captest",
+    "pages/cellhealth/cellhealth",
+    "pages/dcsim/dcsim",
+    "pages/vip/vip"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#07C160",
+    "navigationBarTitleText": "判充",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F5F6F8",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#8A8A8A",
+    "selectedColor": "#07C160",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/dcflow/dcflow",
+        "text": "连接",
+        "iconPath": "assets/tab/dcflow.png",
+        "selectedIconPath": "assets/tab/dcflow_active.png"
+      },
+      {
+        "pagePath": "pages/dcchart/dcchart",
+        "text": "报文曲线",
+        "iconPath": "assets/tab/dcchart.png",
+        "selectedIconPath": "assets/tab/dcchart_active.png"
+      },
+      {
+        "pagePath": "pages/tools/tools",
+        "text": "工具",
+        "iconPath": "assets/tab/tools.png",
+        "selectedIconPath": "assets/tab/tools_active.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "assets/tab/mine.png",
+        "selectedIconPath": "assets/tab/mine_active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

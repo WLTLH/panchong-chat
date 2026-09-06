@@ -1,0 +1,188 @@
+<view class="page">
+  <!-- 免责声明 -->
+  <view class="modal-mask" wx:if="{{showDisclaimer}}" catchtouchmove="true">
+    <view class="modal">
+      <view class="modal-emoji">🔋</view>
+      <view class="modal-title">温馨提示</view>
+      <view class="modal-body">
+        <view class="modal-p">本功能仅供辅助参考，不能代替官方检测或质保判定。</view>
+        <view class="modal-p">如有疑虑，请联系品牌售后或专业机构复测。</view>
+      </view>
+      <view class="modal-btn" bindtap="onAgreeDisclaimer">我知道了</view>
+    </view>
+  </view>
+
+  <!-- 顶部切换 -->
+  <view class="seg-wrap">
+    <view class="seg">
+      <view class="seg-item {{mode==='soh'?'on':''}}" data-mode="soh" bindtap="onSwitchMode">容量测试</view>
+      <view class="seg-item {{mode==='health'?'on':''}}" data-mode="health" bindtap="onSwitchMode">全面体检</view>
+    </view>
+  </view>
+
+  <!-- ===== 引导页 ===== -->
+  <block wx:if="{{phase === 'guide'}}">
+    <view class="hero-card">
+      <view class="hero-glow"></view>
+      <view class="hero-icon">🔋</view>
+      <view class="hero-h1">{{heroTitle}}</view>
+      <view class="hero-h2">{{heroSub}}</view>
+      <view class="hero-tags">
+        <text class="htag">约一次充电</text>
+        <text class="htag">自动记录</text>
+        <text class="htag">无需懂技术</text>
+      </view>
+    </view>
+
+    <view class="section-label">怎么做</view>
+    <view class="steps-card">
+      <view class="step-item" wx:for="{{collectSteps}}" wx:key="id">
+        <view class="step-left">
+          <view class="step-icon">{{item.icon}}</view>
+          <view class="step-line" wx:if="{{index < collectSteps.length - 1}}"></view>
+        </view>
+        <view class="step-right">
+          <view class="step-title">{{item.title}}</view>
+          <view class="step-desc">{{item.desc}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="notice-card">
+      <text class="notice-icon">💡</text>
+      <text class="notice-text">充电时手机会自动记录必要数据，不会占满存储，也无需手动复制任何内容。</text>
+    </view>
+
+    <view class="pipe-card {{pipeTone}}" wx:if="{{pipeStatus}}">
+      <view class="pipe-title">采集状态</view>
+      <view class="pipe-body">{{pipeStatus}}</view>
+    </view>
+
+    <view class="sim-entry" bindtap="goDcsim">高级：直流充电模拟器 ›</view>
+    <view class="demo-entry" bindtap="onDemoSim">⚡ 一键演示（30分钟充电，约 3 秒灌完）</view>
+
+    <view class="fold-card" wx:if="{{mode==='soh'}}">
+      <view class="fold-head">
+        <text class="fold-title">没有车辆数据？可填铭牌容量</text>
+      </view>
+      <view class="fold-body">
+        <input class="fold-input" type="digit" value="{{manualRatedAh}}" placeholder="例如 60 或 100" bindinput="onRatedInput" />
+        <view class="fold-hint">一般写在电池铭牌或说明书上，单位 Ah</view>
+      </view>
+    </view>
+
+    <view class="fold-card tech-fold">
+      <view class="fold-head" bindtap="onToggleTech">
+        <text class="fold-title muted">技术人员说明</text>
+        <text class="fold-arrow">{{showTechDetail ? '收起' : '展开'}}</text>
+      </view>
+      <view class="fold-body" wx:if="{{showTechDetail}}">
+        <view class="tech-line" wx:for="{{keepLabels}}" wx:key="code">
+          <text class="tech-code">{{item.code}}</text>
+          <text class="tech-name">{{item.label}}</text>
+        </view>
+        <view class="tech-link" bindtap="goVerdictGuide">查看完整判定规则 ›</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- ===== 采集中 ===== -->
+  <block wx:if="{{phase === 'collect'}}">
+    <view class="pipe-card {{pipeTone}}">
+      <view class="pipe-title">采集管线</view>
+      <view class="pipe-body">{{pipeStatus || '正在检查…'}}</view>
+      <view class="pipe-sub" wx:if="{{rawLineCount > 0}}">缓冲 {{rawLineCount}} 行 · 有效 {{validLineCount}} 帧 · 模式 {{collectModeLabel || '—'}}</view>
+    </view>
+
+    <view class="live-card">
+      <view class="live-pulse"></view>
+      <view class="live-title">正在记录充电数据</view>
+      <view class="live-sub">请保持充电，电量涨够后点下方按钮</view>
+      <view class="sim-banner" wx:if="{{isSimulator}}">{{simHint || '模拟器灌入中'}}</view>
+
+      <view class="prog-wrap">
+        <view class="prog-bar">
+          <view class="prog-fill" style="width: {{progressPct}}%;"></view>
+        </view>
+        <view class="prog-text">{{progressText}}</view>
+        <view class="collect-stats" wx:if="{{collectStats}}">{{collectStats}}</view>
+      </view>
+
+      <view class="soc-panel" wx:if="{{socRange}}">
+        <view class="soc-from">{{socRange.min}}%</view>
+        <view class="soc-arrow">→</view>
+        <view class="soc-to">{{socRange.max}}%</view>
+        <view class="soc-delta">涨了 {{socRange.span}}%</view>
+      </view>
+      <view class="soc-panel empty" wx:else>
+        <view class="soc-wait">{{rawLineCount > 0 ? '已有数据，等待解析到 SOC…' : '等待电量变化…'}}</view>
+      </view>
+
+      <view class="check-card">
+        <view class="check-item {{item.ok ? 'ok' : ''}}" wx:for="{{requirements}}" wx:key="key" wx:if="{{!item.optional}}">
+          <view class="check-dot">{{item.ok ? '✓' : ''}}</view>
+          <view class="check-label">{{item.userLabel}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="hint-card">
+      <view class="hint-title">小贴士</view>
+      <view class="hint-text">建议从插枪开始记录；充到 75% 左右或电量涨 20% 以上，结果更准。</view>
+    </view>
+  </block>
+
+  <!-- ===== 结果页 ===== -->
+  <block wx:if="{{phase === 'result' && result}}">
+    <view class="result-card">
+      <view class="result-top">
+        <view class="soh-ring" wx:if="{{resultHero}}">
+          <view class="soh-circle">
+            <text class="soh-num">{{resultHero.value}}</text>
+            <text class="soh-unit">{{resultHero.unit}}</text>
+          </view>
+          <view class="soh-cap">{{resultHero.caption}}</view>
+        </view>
+        <view class="result-badge" style="background: {{result.color}};">{{result.label}}</view>
+        <view class="result-summary">{{result.summary}}</view>
+      </view>
+
+      <view class="findings" wx:if="{{result.findings && result.findings.length}}">
+        <view class="finding-item" wx:for="{{result.findings}}" wx:key="title">
+          <view class="finding-head">
+            <text class="finding-title">{{item.title}}</text>
+            <text class="finding-conf" wx:if="{{item.confidence}}">{{item.confidence}}</text>
+          </view>
+          <view class="finding-body">{{item.text}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="metrics-grid">
+      <view class="metric-cell" wx:for="{{metricCards}}" wx:key="label">
+        <view class="metric-val">{{item.value}}</view>
+        <view class="metric-label">{{item.label}}</view>
+        <view class="metric-sub" wx:if="{{item.sub}}">{{item.sub}}</view>
+      </view>
+    </view>
+
+    <view class="advice-card" wx:if="{{result.advice && result.advice.length}}">
+      <view class="advice-title">建议</view>
+      <view class="advice-line" wx:for="{{result.advice}}" wx:key="*this">{{item}}</view>
+    </view>
+
+    <view class="disc-line">{{result.disclaimer}}</view>
+
+    <view class="ghost-btn" bindtap="onRestart">再测一次</view>
+  </block>
+
+  <!-- 底部操作栏 -->
+  <view class="footer safe-area" wx:if="{{phase === 'guide'}}">
+    <view class="footer-btn primary" bindtap="onStartCollect">开始充电体检</view>
+  </view>
+
+  <view class="footer safe-area dual" wx:if="{{phase === 'collect'}}">
+    <view class="footer-btn ghost" bindtap="goDcflow">看充电页</view>
+    <view class="footer-btn primary" bindtap="onFinishCollect">充电够了，看结果</view>
+  </view>
+</view>

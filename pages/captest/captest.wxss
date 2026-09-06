@@ -1,0 +1,230 @@
+@import "../slowcharge/slowcharge.wxss";
+
+.modal-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+  box-sizing: border-box;
+}
+
+.modal {
+  width: 100%;
+  max-height: 80vh;
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 28rpx 28rpx 24rpx;
+  box-sizing: border-box;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 16rpx;
+}
+
+.modal-scroll {
+  max-height: 52vh;
+}
+
+.modal-intro {
+  font-size: 24rpx;
+  color: #555;
+  line-height: 1.55;
+  margin-bottom: 16rpx;
+}
+
+.modal-sub {
+  font-size: 26rpx;
+  font-weight: 700;
+  margin-bottom: 10rpx;
+}
+
+.modal-disc {
+  font-size: 22rpx;
+  color: #666;
+  line-height: 1.65;
+  margin-bottom: 12rpx;
+}
+
+.modal-btn {
+  margin-top: 20rpx;
+  background: #07C160;
+  color: #fff;
+  text-align: center;
+  padding: 22rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.row-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.link-mini {
+  font-size: 24rpx;
+  color: #07C160;
+  font-weight: 500;
+}
+
+.guide-card {
+  border: 1rpx solid #E8F5EE;
+}
+
+.guide-intro {
+  font-size: 24rpx;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 20rpx;
+}
+
+.step {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 18rpx;
+}
+
+.step-no {
+  flex-shrink: 0;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: #07C160;
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 700;
+  text-align: center;
+  line-height: 44rpx;
+}
+
+.step-title {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 4rpx;
+}
+
+.step-text {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.55;
+}
+
+.toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0 8rpx;
+  font-size: 24rpx;
+  color: #07C160;
+  border-top: 1rpx solid #F0F0F0;
+  margin-top: 8rpx;
+}
+
+.toggle-arrow {
+  font-size: 20rpx;
+}
+
+.sub-title {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #333;
+  margin: 20rpx 0 10rpx;
+}
+
+.para {
+  font-size: 24rpx;
+  color: #555;
+  line-height: 1.55;
+}
+
+.formula {
+  background: #F7F8FA;
+  border-radius: 10rpx;
+  padding: 16rpx 18rpx;
+  font-family: monospace;
+  word-break: break-all;
+}
+
+.bullet {
+  font-size: 24rpx;
+  color: #555;
+  line-height: 1.55;
+  margin-bottom: 6rpx;
+}
+
+.muted-bullet {
+  color: #888;
+}
+
+.chem {
+  background: #F7F8FA;
+  border-radius: 10rpx;
+  padding: 14rpx 16rpx;
+  margin-bottom: 10rpx;
+}
+
+.chem-type {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 4rpx;
+}
+
+.chem-note {
+  font-size: 23rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+.disclaimer-card {
+  background: #FAFAFA;
+  border: 1rpx solid #ECECEC;
+}
+
+.disclaimer {
+  font-size: 22rpx;
+  color: #777;
+  line-height: 1.65;
+  margin-bottom: 12rpx;
+}
+
+.disclaimer:last-child {
+  margin-bottom: 0;
+}
+
+.field {
+  margin-bottom: 8rpx;
+}
+
+.field-label {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.field-input {
+  background: #F7F8FA;
+  border-radius: 10rpx;
+  padding: 16rpx 20rpx;
+  font-size: 28rpx;
+}
+
+.issue {
+  font-size: 24rpx;
+  color: #C0392B;
+  line-height: 1.5;
+  margin-bottom: 6rpx;
+}

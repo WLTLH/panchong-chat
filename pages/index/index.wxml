@@ -1,0 +1,42 @@
+<view class="page">
+  <view class="card">
+    <view class="section-title">单帧 / 批量解读</view>
+    <view class="chips">
+      <view class="chip" wx:for="{{chips}}" wx:key="code" data-code="{{item.code}}" bindtap="onChip">{{item.code}}</view>
+    </view>
+    <textarea
+      class="log-area mono"
+      placeholder="CAN ID + hex，或多行日志"
+      value="{{input}}"
+      bindinput="onInput"
+      maxlength="-1"
+    />
+    <view class="btn-row" style="margin-top:16rpx;">
+      <view class="btn-primary sm" bindtap="onDecode">解读</view>
+      <view class="btn-ghost" bindtap="onClear">清空</view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{single}}">
+    <view class="section-title">{{single.code}} · {{single.stage}}</view>
+    <view class="mfr-tag">厂家：{{single.manufacturerText}}</view>
+    <view class="muted" style="margin:8rpx 0;">{{single.labelText}}</view>
+    <view class="muted mono">ID {{single.idHex}} · SA 0x{{single.saHex}} · {{single.sideLabel}}</view>
+    <view class="sum">{{single.summary}}</view>
+    <view class="field" wx:for="{{single.fields}}" wx:key="name">
+      <text class="fname">{{item.name}}</text>
+      <text class="fval">{{item.value}}{{item.unit}}</text>
+      <text class="muted" wx:if="{{item.note}}">{{item.note}}</text>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{batch}}">
+    <view class="section-title">批量会话摘要</view>
+    <view>识别帧 {{batch.frameCount}} · 重组 {{batch.reassembledCount}} · 时长 {{batch.totalMs}} ms</view>
+    <view class="muted mono" style="margin-top:8rpx;">{{batch.codeText}}</view>
+    <view class="batch-line" wx:for="{{batch.preview}}" wx:key="index">
+      <text class="mono">{{item.code}}</text>
+      <text>{{item.summary}}</text>
+    </view>
+  </view>
+</view>

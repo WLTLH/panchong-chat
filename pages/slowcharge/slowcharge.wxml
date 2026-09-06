@@ -1,0 +1,55 @@
+<view class="page">
+  <view class="hint">对比 BCL（车要多少）/ CML（桩最大）/ CCS（桩实出），给出慢在车还是桩的倾向。需 27930 枪线日志。</view>
+
+  <view class="card">
+    <view class="section-title">示例场景</view>
+    <view
+      class="demo {{activeId===item.id?'on':''}}"
+      wx:for="{{scenarios}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="onPickDemo"
+    >
+      <view class="demo-title">{{item.title}}</view>
+      <view class="demo-desc">{{item.desc}}</view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{result}}">
+    <view class="verdict" style="background:{{result.color}};">
+      <view class="v-label">{{result.label}}</view>
+      <view class="v-sum">{{result.summary}}</view>
+      <view class="v-disc">{{result.disclaimer}}</view>
+    </view>
+
+    <view class="section-title" style="margin-top:20rpx;">关键数字</view>
+    <view class="num" wx:for="{{numRows}}" wx:key="k">
+      <text class="num-k">{{item.k}}</text>
+      <text class="num-v">{{item.v}}</text>
+    </view>
+
+    <view class="section-title" style="margin-top:20rpx;">依据</view>
+    <view class="ev" wx:for="{{result.evidence}}" wx:key="index">
+      <text class="tag tag-{{item.tag}}">{{item.tag==='pile'?'桩':(item.tag==='vehicle'?'车':'注')}}</text>
+      <text class="ev-text">{{item.text}}</text>
+    </view>
+
+    <view class="section-title" style="margin-top:20rpx;">建议</view>
+    <view class="advice" wx:for="{{result.advice}}" wx:key="*this">· {{item}}</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">日志</view>
+    <textarea
+      class="log"
+      value="{{logText}}"
+      maxlength="-1"
+      placeholder="粘贴 27930 日志，或点上方示例"
+      bindinput="onLogInput"
+    />
+    <view class="btn-row">
+      <view class="btn-ghost" bindtap="onPasteLast">用最近采集</view>
+      <view class="btn-primary" bindtap="onAnalyze">重新判定</view>
+    </view>
+  </view>
+</view>

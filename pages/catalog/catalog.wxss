@@ -1,0 +1,30 @@
+.search {
+  background: #F7F8FA;
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  margin-bottom: 16rpx;
+}
+.stages { white-space: nowrap; }
+.stage-chip {
+  display: inline-block;
+  padding: 10rpx 22rpx;
+  margin-right: 12rpx;
+  background: #F0F0F0;
+  border-radius: 24rpx;
+  font-size: 24rpx;
+}
+.stage-chip.on { background: #E8F8EF; color: #07C160; font-weight: 600; }
+.row {
+  padding: 22rpx 0;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+.row-top { display: flex; gap: 16rpx; align-items: baseline; margin-bottom: 6rpx; }
+.code { font-weight: 700; font-size: 30rpx; color: #07C160; }
+.name { font-size: 28rpx; }
+.mfr {
+  font-size: 24rpx;
+  color: #07C160;
+  font-weight: 600;
+  margin-bottom: 4rpx;
+}
+.list-card { margin-bottom: 40rpx; }

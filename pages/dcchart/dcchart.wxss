@@ -1,0 +1,72 @@
+.empty-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.btn-main {
+  margin-top: 24rpx;
+  text-align: center;
+  padding: 24rpx 0;
+  border-radius: 48rpx;
+  background: #07C160;
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.kv {
+  display: flex;
+  padding: 10rpx 0;
+  border-bottom: 1rpx solid #F0F0F0;
+  font-size: 26rpx;
+}
+.k { width: 160rpx; color: #888; }
+.v { flex: 1; }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+  margin-bottom: 12rpx;
+  font-size: 22rpx;
+}
+.lg.soc { color: #E64340; }
+.lg.iout { color: #07C160; }
+.lg.ireq { color: #2F6BFF; }
+.lg.ins { color: #9B59B6; }
+.lg.icml { color: #E67E22; }
+
+.canvas {
+  width: 100%;
+  height: 420rpx;
+  background: #FAFBFC;
+  border-radius: 12rpx;
+}
+
+.speed-verdict {
+  margin-top: 16rpx;
+  padding: 16rpx 18rpx;
+  background: #F7F8FA;
+  border-radius: 12rpx;
+  border-left: 6rpx solid #07C160;
+}
+.speed-label { font-size: 28rpx; font-weight: 700; margin-bottom: 8rpx; }
+.speed-sum { font-size: 24rpx; color: #333; line-height: 1.5; }
+.speed-nums {
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  color: #666;
+  font-variant-numeric: tabular-nums;
+}
+.speed-verdict.lock { border-left-color: #E67E22; }
+.btn-vip {
+  margin-top: 16rpx;
+  text-align: center;
+  padding: 16rpx;
+  border-radius: 12rpx;
+  background: #07C160;
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 600;
+}

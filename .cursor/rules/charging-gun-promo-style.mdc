@@ -1,0 +1,34 @@
+---
+description: 充电枪连接演示的产品片视觉风格（已定版，后续只在此风格上迭代）
+alwaysApply: true
+---
+
+# 充电枪动画风格（定版）
+
+> 用户已口头确认「非常好，这个表达很好」——此后只在此表达上迭代，勿推翻重来。
+
+## 视觉双层（不要拆开）
+
+1. **产品片外框（勿改）**：暗场舞台 `#121418`、米色 HUD、SHOT 旁白、`stageCaption`、触点标注列表。
+2. **主画面模型（客户展示）**：三维半剖透明枪/口对接  
+   - WebGL：`utils/gun_model3d.js`（`mode:'demo'`）— 半透壳体 + 半剖 + 9 触头状态色  
+   - 由 `connectAnim.gunProgress` 控制插入间隙；触头绿/蓝/红跟 `cutawayPins`  
+   - `diagnosisTip` 诊断条说明断点；锁止键 / 锁销 callout 保留  
+   - WebGL 失败时回退 `cutaway_base_*.jpg` 示意图
+
+## 信号
+
+- `connect_anim` → 三维 `update(anim)`；触头有 27930/连接证据才点亮。
+- `lockParts`：按压锁止键 / 锁销随分镜点亮（`lock_fail` 标红）。
+
+## 禁止
+
+- 主画面只用扁平 2D 桥接条代替三维（二维仅作 WebGL 回退）
+- 把舞台改成浅灰 CAD 软件界面风（丢产品片外框）
+- 用不完整半成品图（左侧只有白圈）
+
+## 落点
+
+- `pages/dcflow/dcflow.wxml|.js|.wxss`
+- `utils/gun_model3d.js` + `utils/connect_anim.js`
+- 回退图：`assets/connect/cutaway_base_*.jpg`

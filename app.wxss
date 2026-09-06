@@ -1,0 +1,74 @@
+page {
+  background: #F5F6F8;
+  color: #1A1A1A;
+  font-size: 28rpx;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.card {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+  padding: 28rpx;
+  margin: 24rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1A1A1A;
+  margin-bottom: 16rpx;
+}
+
+.muted {
+  color: #888888;
+  font-size: 24rpx;
+}
+
+.btn-primary {
+  background: #07C160;
+  color: #FFFFFF;
+  border-radius: 48rpx;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.btn-primary.disabled {
+  opacity: 0.45;
+}
+
+.btn-ghost {
+  background: #FFFFFF;
+  color: #07C160;
+  border: 2rpx solid #07C160;
+  border-radius: 48rpx;
+  text-align: center;
+  padding: 18rpx 28rpx;
+  font-size: 26rpx;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+}
+
+.tag-pile { background: #E8F8EF; color: #07C160; }
+.tag-vehicle { background: #E8F1FF; color: #2F6BFF; }
+.tag-connection { background: #FFF3E6; color: #E67E22; }
+.tag-neutral { background: #F0F0F0; color: #666666; }
+
+.mono {
+  font-family: Consolas, Monaco, monospace;
+  font-size: 24rpx;
+}

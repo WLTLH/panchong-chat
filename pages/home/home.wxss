@@ -1,0 +1,72 @@
+.page { padding-bottom: 48rpx; }
+
+.hero-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  margin-bottom: 8rpx;
+}
+
+.type-row {
+  display: flex;
+  gap: 20rpx;
+}
+
+.type-card {
+  flex: 1;
+  text-align: center;
+  padding: 36rpx 12rpx;
+  border-radius: 16rpx;
+  border: 3rpx solid #E5E5E5;
+  background: #FAFAFA;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.type-card.on {
+  border-color: #07C160;
+  background: #E8F8EF;
+  color: #07C160;
+}
+
+.tip { margin-top: 12rpx; }
+
+.obs-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #F0F0F0;
+  font-size: 26rpx;
+}
+
+.obs-item:last-child { border-bottom: none; }
+
+.log-area {
+  width: 100%;
+  min-height: 220rpx;
+  max-height: 360rpx;
+  background: #F7F8FA;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  box-sizing: border-box;
+}
+
+.note-area {
+  width: 100%;
+  min-height: 120rpx;
+  background: #F7F8FA;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  box-sizing: border-box;
+  font-size: 26rpx;
+}
+
+.footer-actions {
+  margin: 32rpx 24rpx;
+}
+
+.disclaimer {
+  text-align: center;
+  margin-top: 20rpx;
+  line-height: 1.6;
+}

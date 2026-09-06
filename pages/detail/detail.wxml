@@ -1,0 +1,27 @@
+<view class="page" wx:if="{{meta}}">
+  <view class="card">
+    <view class="code">{{meta.code}}</view>
+    <view class="name">{{meta.name}}</view>
+    <view class="mfr">厂家：{{meta.manufacturer || '未标注厂家'}}</view>
+    <view class="muted">{{meta.bus || ''}} · {{meta.stage}} · {{meta.direction}}</view>
+    <view class="kv"><text class="k">PGN/ID</text><text>{{meta.pgn}}</text></view>
+    <view class="kv"><text class="k">DLC</text><text>{{meta.dlc}}</text></view>
+    <view class="kv"><text class="k">周期</text><text>{{meta.period}}</text></view>
+    <view class="desc">{{meta.desc}}</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">字段</view>
+    <view class="field" wx:for="{{meta.fields}}" wx:key="name">
+      <view class="fname">{{item.name}}</view>
+      <view class="muted">字节 {{item.bytes}}</view>
+      <view wx:if="{{item.note}}">{{item.note}}</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">示例</view>
+    <view class="mono">{{meta.exampleId}} {{meta.exampleData}}</view>
+    <view class="btn-primary sm" style="margin-top:20rpx;" bindtap="fillDecode">填入示例到解读页</view>
+  </view>
+</view>

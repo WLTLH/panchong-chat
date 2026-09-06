@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>充电采集分析 · 界面预览</title>
+<style>
+  :root {
+    --green: #07C160;
+    --bg: #F5F6F8;
+    --text: #1A1A1A;
+    --muted: #888;
+    --blue: #2F6BFF;
+    --orange: #E67E22;
+    --red: #E64340;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #1c1c1e;
+    color: var(--text);
+  }
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+  }
+  h1 {
+    color: #fff;
+    font-size: 22px;
+    margin: 0 0 8px;
+  }
+  .sub { color: #aaa; font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
+  .tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .tabs button {
+    border: none;
+    background: #333;
+    color: #ddd;
+    padding: 10px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .tabs button.on {
+    background: var(--green);
+    color: #fff;
+    font-weight: 600;
+  }
+  .phones {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+  }
+  .phone {
+    background: #111;
+    border-radius: 28px;
+    padding: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.45);
+  }
+  .phone-label {
+    color: #ccc;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .screen {
+    background: var(--bg);
+    border-radius: 20px;
+    overflow: hidden;
+    height: 640px;
+    display: flex;
+    flex-direction: column;
+  }
+  .nav {
+    background: var(--green);
+    color: #fff;
+    text-align: center;
+    padding: 14px 12px 12px;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .body {
+    flex: 1;
+    overflow: auto;
+    padding-bottom: 56px;
+  }
+  .tabbar {
+    display: flex;
+    background: #fff;
+    border-top: 1px solid #eee;
+    height: 52px;
+  }
+  .tabbar .t {
+    flex: 1;
+    text-align: center;
+    font-size: 11px;
+    color: #8a8a8a;
+    padding-top: 8px;
+  }
+  .tabbar .t.on { color: var(--green); font-weight: 600; }
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    padding: 14px;
+    margin: 12px;
+  }
+  .title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .muted { color: var(--muted); font-size: 12px; line-height: 1.5; }
+  .section { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+  .type-row { display: flex; gap: 10px; }
+  .type {
+    flex: 1;
+    text-align: center;
+    padding: 18px 8px;
+    border: 2px solid #e5e5e5;
+    border-radius: 12px;
+    background: #fafafa;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .type.on { border-color: var(--green); background: #E8F8EF; color: var(--green); }
+  .obs { font-size: 13px; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+  .obs:last-child { border-bottom: none; }
+  .btn {
+    background: var(--green);
+    color: #fff;
+    text-align: center;
+    border-radius: 24px;
+    padding: 12px;
+    font-weight: 600;
+    margin: 12px;
+    font-size: 15px;
+  }
+  .btn-ghost {
+    display: inline-block;
+    border: 1px solid var(--green);
+    color: var(--green);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 12px;
+    margin: 4px 4px 0 0;
+    background: #fff;
+  }
+  .hero {
+    margin: 12px;
+    border-radius: 12px;
+    padding: 14px;
+    color: #fff;
+  }
+  .hero.green { background: linear-gradient(135deg, #0AA879, #07C160); }
+  .hero.blue { background: #2F6BFF; }
+  .hero.red { background: #E64340; }
+  .hero.gray { background: #8A8A8A; }
+  .hero h2 { margin: 0; font-size: 18px; }
+  .hero p { margin: 6px 0 0; font-size: 12px; opacity: .95; line-height: 1.5; }
+  .bar { height: 4px; background: rgba(255,255,255,.3); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 72%; background: #fff; }
+  .metrics { display: flex; gap: 8px; overflow: auto; padding: 0 12px; }
+  .m {
+    min-width: 100px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  }
+  .m .k { font-size: 11px; color: #888; }
+  .m .v { font-size: 15px; font-weight: 700; margin-top: 2px; }
+  .node { display: flex; gap: 10px; min-height: 48px; }
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #d0d0d0; margin-top: 4px; flex-shrink: 0;
+    box-shadow: 0 0 0 4px rgba(47,107,255,.2);
+  }
+  .dot.done { background: var(--green); box-shadow: none; }
+  .dot.active { background: var(--blue); }
+  .dot.err { background: var(--red); box-shadow: 0 0 0 4px rgba(230,67,64,.2); }
+  .line-col { display: flex; flex-direction: column; align-items: center; width: 14px; }
+  .vline { flex: 1; width: 2px; background: #e5e5e5; margin: 4px 0; }
+  .nt { font-size: 14px; font-weight: 600; }
+  .verdict {
+    margin: 12px;
+    border-radius: 12px;
+    padding: 16px;
+    color: #fff;
+    background: var(--orange);
+  }
+  .verdict h2 { margin: 0; font-size: 22px; }
+  .score { display: flex; align-items: center; gap: 8px; margin: 8px 0; font-size: 13px; }
+  .track { flex: 1; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
+  .fill { height: 100%; border-radius: 4px; }
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-right: 6px;
+  }
+  .tag.c { background: #FFF3E6; color: var(--orange); }
+  .tag.p { background: #E8F8EF; color: var(--green); }
+  .tag.v { background: #E8F1FF; color: var(--blue); }
+  .chart-box {
+    height: 160px;
+    background: #fafbfc;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .chart-box svg { width: 100%; height: 100%; display: block; }
+  .legend { display: flex; gap: 10px; font-size: 11px; margin-bottom: 8px; flex-wrap: wrap; }
+  .hidden { display: none !important; }
+  .note {
+    margin-top: 24px;
+    color: #999;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>充电采集分析 · 界面预览</h1>
+  <p class="sub">这是浏览器静态示意（非微信真机）。样式对齐规格：微信绿 #07C160、白卡片、现场可用风格。<br>
+  点下方按钮切换查看各页；正式运行请用「微信开发者工具」导入工程目录。</p>
+
+  <div class="tabs">
+    <button class="on" data-show="all">四页总览</button>
+    <button data-show="home">采集</button>
+    <button data-show="dcflow">直流流程</button>
+    <button data-show="dcchart">报文曲线</button>
+    <button data-show="result">分析结果</button>
+  </div>
+
+  <div class="phones" id="phones">
+    <!-- 采集 -->
+    <div class="phone" data-page="home">
+      <div class="phone-label">Tab · 采集</div>
+      <div class="screen">
+        <div class="nav">采集</div>
+        <div class="body">
+          <div class="card">
+            <div class="title">插枪测试 · 采集数据</div>
+            <div class="muted">先记录现场可观察事实，再补充 27930 通信日志。结论为倾向建议，不定责。</div>
+          </div>
+          <div class="card">
+            <div class="section">1. 本次测试类型</div>
+            <div class="type-row">
+              <div class="type">交流慢充</div>
+              <div class="type on">直流快充</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section">2. 现象多选</div>
+            <div class="obs">☑ 只有这一把桩失败，其它桩正常</div>
+            <div class="obs">☐ 枪口脏/异物/没插到位</div>
+            <div class="obs">☐ 主要是桩屏报错</div>
+          </div>
+          <div class="card">
+            <div class="section">3. 通信记录</div>
+            <div class="muted" style="font-family:Consolas,monospace;background:#F7F8FA;padding:8px;border-radius:8px;">
+              00:00:00.000 1826F456 01 01 00<br>
+              00:00:00.050 182756F4 3C 0A<br>
+              … 全量已载入
+            </div>
+            <div style="margin-top:8px;">
+              <span class="btn-ghost">填入演示</span>
+              <span class="btn-ghost">清空</span>
+            </div>
+          </div>
+          <div class="btn">开始分析 · 判桩/车</div>
+          <div class="muted" style="text-align:center;padding:0 12px 12px;">辅助判断，不替代官方诊断</div>
+        </div>
+        <div class="tabbar">
+          <div class="t on">采集</div><div class="t">直流流程</div><div class="t">报文曲线</div><div class="t">工具</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 直流流程 -->
+    <div class="phone" data-page="dcflow">
+      <div class="phone-label">Tab · 直流流程（核心）</div>
+      <div class="screen">
+        <div class="nav">直流流程</div>
+        <div class="body">
+          <div class="hero blue">
+            <h2>回放中</h2>
+            <p>需求 750.0V / |I| 100.0A</p>
+            <div class="muted" style="color:rgba(255,255,255,.9);margin-top:8px;font-size:11px;">
+              00:01.220 / 00:04.100 · 帧 18 / 37 · 最近 CCS
+            </div>
+            <div class="bar"><i></i></div>
+          </div>
+          <div class="card" style="padding:10px 14px;">
+            <div class="section" style="margin-bottom:8px;">回放倍速</div>
+            <span class="btn-ghost">1x</span>
+            <span class="btn-ghost">5x</span>
+            <span class="btn-ghost" style="background:#E8F8EF;">10x</span>
+            <span class="btn-ghost">30x</span>
+          </div>
+          <div class="metrics">
+            <div class="m"><div class="k">电流|I|</div><div class="v">100.0 A</div><div class="muted">CCS</div></div>
+            <div class="m"><div class="k">SOC</div><div class="v">40 %</div><div class="muted">BCS</div></div>
+            <div class="m"><div class="k">电池类型</div><div class="v" style="font-size:12px;">磷酸铁锂</div><div class="muted">BRM</div></div>
+            <div class="m"><div class="k">桩ID</div><div class="v">77881</div><div class="muted">CRM</div></div>
+          </div>
+          <div class="card">
+            <div class="section">充电流程</div>
+            <div class="node"><div class="line-col"><div class="dot done"></div><div class="vline"></div></div><div><div class="nt">插枪连接</div><div class="muted">已完成</div></div></div>
+            <div class="node"><div class="line-col"><div class="dot done"></div><div class="vline"></div></div><div><div class="nt">握手</div><div class="muted">已见 CHM/BHM</div></div></div>
+            <div class="node"><div class="line-col"><div class="dot done"></div><div class="vline"></div></div><div><div class="nt">辨识</div><div class="muted">已见 CRM/BRM</div></div></div>
+            <div class="node"><div class="line-col"><div class="dot done"></div><div class="vline"></div></div><div><div class="nt">参数 / 就绪</div><div class="muted">已见 BCP/CML/BRO/CRO</div></div></div>
+            <div class="node"><div class="line-col"><div class="dot active"></div><div class="vline"></div></div><div><div class="nt">充电中</div><div class="muted">BCL / CCS / BCS / BSM</div></div></div>
+            <div class="node"><div class="line-col"><div class="dot"></div></div><div><div class="nt">结束统计</div><div class="muted">待出现</div></div></div>
+          </div>
+        </div>
+        <div class="tabbar">
+          <div class="t">采集</div><div class="t on">直流流程</div><div class="t">报文曲线</div><div class="t">工具</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 报文曲线 -->
+    <div class="phone" data-page="dcchart">
+      <div class="phone-label">Tab · 报文曲线</div>
+      <div class="screen">
+        <div class="nav">报文曲线</div>
+        <div class="body">
+          <div class="hero green">
+            <h2>已加载 Trace</h2>
+            <p>帧 34 · 点 11 · 00:02.500 / 00:04.100</p>
+            <div class="bar"><i style="width:60%"></i></div>
+          </div>
+          <div class="card">
+            <div class="section">车辆信息</div>
+            <div style="font-size:13px;line-height:1.8;">
+              <div><span class="muted">VIN</span>　LSGALTEST0000001V</div>
+              <div><span class="muted">电池</span>　磷酸铁锂电池</div>
+              <div><span class="muted">SOC</span>　45%</div>
+              <div><span class="muted">桩ID</span>　77881</div>
+            </div>
+            <div class="muted" style="margin-top:8px;">绝缘仅状态位，无 kΩ；门槛文案为科普，非本会话测得。</div>
+          </div>
+          <div class="card">
+            <div class="section">SOC / 电流幅值|I| / 绝缘状态</div>
+            <div class="legend">
+              <span style="color:#E64340">SOC%</span>
+              <span style="color:#07C160">输出|I|</span>
+              <span style="color:#2F6BFF">需求|I|</span>
+              <span style="color:#9B59B6">绝缘状态</span>
+            </div>
+            <div class="chart-box">
+              <svg viewBox="0 0 300 160" preserveAspectRatio="none">
+                <line x1="30" y1="20" x2="280" y2="20" stroke="#eee"/><line x1="30" y1="55" x2="280" y2="55" stroke="#eee"/>
+                <line x1="30" y1="90" x2="280" y2="90" stroke="#eee"/><line x1="30" y1="125" x2="280" y2="125" stroke="#eee"/>
+                <polyline fill="none" stroke="#E64340" stroke-width="2" points="30,100 80,95 140,90 200,85 260,80"/>
+                <polyline fill="none" stroke="#07C160" stroke-width="2" points="30,120 80,50 140,48 200,52 260,55"/>
+                <polyline fill="none" stroke="#2F6BFF" stroke-width="2" stroke-dasharray="5 3" points="30,118 80,52 140,52 200,52 260,52"/>
+                <polyline fill="none" stroke="#9B59B6" stroke-width="2" stroke-dasharray="3 3" points="30,40 260,40"/>
+                <line x1="200" y1="15" x2="200" y2="130" stroke="#333" stroke-width="1"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="tabbar">
+          <div class="t">采集</div><div class="t">直流流程</div><div class="t on">报文曲线</div><div class="t">工具</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 结果 -->
+    <div class="phone" data-page="result">
+      <div class="phone-label">子页 · 分析结果（交流/无日志）</div>
+      <div class="screen">
+        <div class="nav">分析结果</div>
+        <div class="body">
+          <div class="verdict">
+            <h2>倾向连接问题</h2>
+            <p style="margin:8px 0 0;font-size:13px;line-height:1.5;opacity:.95;">连接相关观察/证据领先。建议优先检查插枪到位、锁止、枪口清洁与 CC 电阻，再决定是否换桩复核。</p>
+          </div>
+          <div class="card">
+            <div class="section">三维倾向强度</div>
+            <div class="score"><span style="width:36px">桩</span><div class="track"><div class="fill" style="width:20%;background:#07C160"></div></div><span>1</span></div>
+            <div class="score"><span style="width:36px">车</span><div class="track"><div class="fill" style="width:15%;background:#2F6BFF"></div></div><span>0</span></div>
+            <div class="score"><span style="width:36px">连接</span><div class="track"><div class="fill" style="width:100%;background:#E67E22"></div></div><span>7</span></div>
+          </div>
+          <div class="card">
+            <div class="section">建议操作</div>
+            <div class="muted" style="font-size:13px;line-height:1.7;">
+              · 检查枪口清洁、插接到位与电子锁<br>
+              · 排除连接后再换桩复核<br>
+              · 本工具为辅助倾向，不替代官方诊断
+            </div>
+          </div>
+          <div class="card">
+            <div class="section">依据</div>
+            <div style="font-size:13px;padding:6px 0;"><span class="tag c">连接</span>枪口脏/异物/没插到位</div>
+            <div style="font-size:13px;padding:6px 0;"><span class="tag c">连接</span>锁止失败</div>
+          </div>
+        </div>
+        <div class="tabbar">
+          <div class="t">采集</div><div class="t">直流流程</div><div class="t">报文曲线</div><div class="t">工具</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">正式小程序在微信开发者工具中打开本仓库根目录即可编译预览。本 HTML 仅作布局示意，不含真回放引擎。</p>
+</div>
+<script>
+  var btns = document.querySelectorAll('.tabs button');
+  var phones = document.querySelectorAll('.phone');
+  btns.forEach(function(b){
+    b.onclick = function(){
+      btns.forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+      var show = b.getAttribute('data-show');
+      phones.forEach(function(p){
+        if (show === 'all') p.classList.remove('hidden');
+        else p.classList.toggle('hidden', p.getAttribute('data-page') !== show);
+      });
+    };
+  });
+</script>
+</body>
+</html>

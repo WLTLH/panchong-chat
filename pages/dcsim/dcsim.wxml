@@ -1,0 +1,190 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-tag">测试专用</view>
+    <view class="hero-title">直流充电模拟器</view>
+    <view class="hero-sub">可设模拟时长与采集模式，验证长采、过滤、截断等问题</view>
+  </view>
+
+  <!-- 快捷预设 -->
+  <view class="card accent">
+    <view class="section-title">快捷预设</view>
+    <view class="quick-row">
+      <view
+        class="quick-btn"
+        wx:for="{{quickPresets}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="onQuickPreset"
+      >{{item.label}}</view>
+    </view>
+  </view>
+
+  <!-- 时长 -->
+  <view class="card">
+    <view class="section-title">模拟时长</view>
+    <view class="chip-row">
+      <view
+        class="chip {{durationId===item.id?'on':''}}"
+        wx:for="{{durationPresets}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        data-min="{{item.min}}"
+        bindtap="onPickDuration"
+      >{{item.label}}</view>
+    </view>
+    <view class="custom-row">
+      <text class="custom-label">自定义</text>
+      <input
+        class="custom-input"
+        type="number"
+        placeholder="分钟，如 45"
+        value="{{customMin}}"
+        bindinput="onCustomMinInput"
+      />
+      <text class="custom-unit">分钟</text>
+    </view>
+  </view>
+
+  <!-- 采集模式 -->
+  <view class="card">
+    <view class="section-title">采集间隔</view>
+    <view class="chip-row">
+      <view
+        class="chip {{tickSec===item.sec?'on':''}}"
+        wx:for="{{tickPresets}}"
+        wx:key="id"
+        data-sec="{{item.sec}}"
+        bindtap="onPickTick"
+      >{{item.label}}</view>
+    </view>
+    <view class="hint">24h 建议 60 秒/拍；30 天建议 5 分/拍（缩短帧数、加快 wall 时间）</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">采集模式</view>
+    <view class="mode-item {{collectMode===item.id?'on':''}}"
+      wx:for="{{collectModes}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="onPickCollect"
+    >
+      <view class="mode-title">{{item.label}}</view>
+      <view class="mode-desc">{{item.desc}}</view>
+    </view>
+  </view>
+
+  <!-- 失效注入 -->
+  <view class="card accent-warn">
+    <view class="section-title">失效注入</view>
+    <view class="hint">在指定时刻注入 CEM/BEM/CST/BST，验证连接页与裁决能否识别</view>
+    <view class="mode-item {{failMode===item.id?'on':''}}"
+      wx:for="{{failureModes}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="onPickFailMode"
+    >
+      <view class="mode-title">{{item.label}}</view>
+      <view class="mode-desc" wx:if="{{item.group}}">{{item.group}} · {{item.expect}}</view>
+      <view class="mode-desc" wx:else>{{item.expect}}</view>
+    </view>
+    <view class="fail-at-title">失效时刻</view>
+    <view class="chip-row">
+      <view
+        class="chip {{failAtId===item.id?'on':''}}"
+        wx:for="{{failAtPresets}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="onPickFailAt"
+      >{{item.label}}</view>
+      <view class="chip {{failAtId==='custom'?'on':''}}" data-id="custom" bindtap="onPickFailAt">自定义</view>
+    </view>
+    <view class="custom-row" wx:if="{{failAtId==='custom'}}">
+      <input class="custom-input short" type="number" placeholder="分" value="{{failAtMin}}" bindinput="onFailAtMinInput" />
+      <text class="custom-unit">分</text>
+      <input class="custom-input short" type="number" placeholder="秒" value="{{failAtSecRem}}" bindinput="onFailAtSecInput" />
+      <text class="custom-unit">秒</text>
+    </view>
+    <view class="fail-expect" wx:if="{{failExpectText}}">{{failExpectText}}</view>
+  </view>
+
+  <!-- 播放方式 -->
+  <view class="card">
+    <view class="section-title">发送方式</view>
+    <view class="chip-row">
+      <view
+        class="chip {{playMode===item.id?'on':''}}"
+        wx:for="{{playModes}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="onPickPlay"
+      >{{item.label}}</view>
+    </view>
+    <view class="hint">{{playMode==='timeline'?'按时间戳逐帧发送，可看连接页实时变化':'瞬间写入全部报文，适合快速看分析结果'}}</view>
+  </view>
+
+  <!-- 场景 -->
+  <view class="card">
+    <view class="section-title">报文场景</view>
+    <view class="group" wx:for="{{groups}}" wx:key="id">
+      <view class="group-title">{{item.title}}</view>
+      <view
+        class="scene {{activeId===scene.id?'on':''}}"
+        wx:for="{{item.items}}"
+        wx:for-item="scene"
+        wx:key="id"
+        data-id="{{scene.id}}"
+        bindtap="onPickScenario"
+      >
+        <view class="scene-title">{{scene.title}}</view>
+        <view class="scene-desc">{{scene.desc}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card slim" wx:if="{{estimateText}}">
+    <view class="estimate">{{estimateText}}</view>
+    <view class="warn" wx:if="{{warnText}}">{{warnText}}</view>
+  </view>
+
+  <!-- 播放控制 -->
+  <view class="card">
+    <view class="section-title">播放</view>
+    <view class="speed-row">
+      <text class="speed-label">倍速</text>
+      <view class="speed-btn {{speed===1?'on':''}}" data-speed="1" bindtap="onSpeed">1×</view>
+      <view class="speed-btn {{speed===5?'on':''}}" data-speed="5" bindtap="onSpeed">5×</view>
+      <view class="speed-btn {{speed===10?'on':''}}" data-speed="10" bindtap="onSpeed">10×</view>
+      <view class="speed-btn {{speed===20?'on':''}}" data-speed="20" bindtap="onSpeed">20×</view>
+      <view class="speed-btn {{speed===50?'on':''}}" data-speed="50" bindtap="onSpeed">50×</view>
+      <view class="speed-btn {{speed===100?'on':''}}" data-speed="100" bindtap="onSpeed">100×</view>
+    </view>
+    <view class="opt-row" bindtap="onToggleAutoGo">
+      <text class="opt-check">{{autoGoConnect ? '☑' : '☐'}}</text>
+      <text>开始后自动跳到「连接」页</text>
+    </view>
+    <view class="clock-row" wx:if="{{playing || liveText}}">
+      <text>模拟 {{simClock}}</text>
+      <text>实耗 {{wallClock}}</text>
+    </view>
+    <view class="live" wx:if="{{liveText}}">{{liveText}}</view>
+    <view class="monitor {{monitorTone}}" wx:if="{{monitorText}}">{{monitorText}}</view>
+    <view class="prog-bar">
+      <view class="prog-fill" style="width: {{progressPct}}%;"></view>
+    </view>
+    <view class="prog-text">{{progressText}}</view>
+    <view class="status">{{statusText}}</view>
+    <view class="btn-row">
+      <view class="btn primary" bindtap="onStart" wx:if="{{!playing}}">{{playMode==='instant'?'一次性灌入':'开始模拟'}}</view>
+      <view class="btn ghost" bindtap="onPause" wx:if="{{playing && playMode==='timeline'}}">暂停</view>
+      <view class="btn ghost" bindtap="onStop">停止</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">模拟中去验证</view>
+    <view class="link" bindtap="goConnect">连接页 · 长采是否卡顿/截断</view>
+    <view class="link" bindtap="goCellhealthSoh">容量测试 · 开始采集后跑 30/60 分钟</view>
+    <view class="link" bindtap="goCellhealth">电芯鉴康 · 验证过滤后是否够分析</view>
+    <view class="link" bindtap="goSlowcharge">充电慢 · 看 BCL/CCS 样本量</view>
+  </view>
+</view>

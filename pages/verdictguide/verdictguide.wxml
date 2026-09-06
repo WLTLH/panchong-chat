@@ -1,0 +1,280 @@
+<view class="page">
+  <view class="card tip">
+    <view class="tip-title">桩 / 车 / 连接 判定参考</view>
+    <view class="muted">与采集分析同一套规则。倾向判断不定责，不替代官方诊断。</view>
+  </view>
+
+  <view class="seg">
+    <view
+      class="seg-item {{tab === item.key ? 'on' : ''}}"
+      wx:for="{{tabs}}"
+      wx:key="key"
+      data-tab="{{item.key}}"
+      bindtap="onTab"
+    >{{item.label}}</view>
+  </view>
+
+  <!-- 现场检查表 -->
+  <block wx:if="{{tab === 'field'}}">
+    <view class="card group-card" wx:for="{{fieldGroups}}" wx:key="title">
+      <view class="group-head" style="border-color:{{item.color}}">
+        <view class="group-title" style="color:{{item.color}}">{{item.title}}</view>
+        <view class="muted">按顺序逐项排除</view>
+      </view>
+      <view class="step-row" wx:for="{{item.steps}}" wx:for-item="step" wx:key="n">
+        <view class="step-n" style="background:{{item.color}}">{{step.n}}</view>
+        <view class="step-body">
+          <view class="step-title">{{step.title}}</view>
+          <view class="muted">{{step.detail}}</view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 观察项 -->
+  <block wx:if="{{tab === 'obs'}}">
+    <view class="card">
+      <view class="section-title">现场观察项加分</view>
+      <view class="muted" style="margin-bottom:16rpx;">在「采集分析」页勾选，自动计入三维分数。</view>
+      <view class="tbl">
+        <view class="tbl-h">
+          <text class="c-obs">观察项</text>
+          <text class="c-lean">倾向</text>
+          <text class="c-w">分</text>
+        </view>
+        <view class="tbl-r" wx:for="{{observationTable}}" wx:key="id">
+          <text class="c-obs">{{item.label}}</text>
+          <text class="c-lean" style="color:{{item.leanColor}}">{{item.leanLabel}}</text>
+          <text class="c-w">+{{item.weight}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="card">
+      <view class="section-title">27930 存在性规则</view>
+      <view class="tbl">
+        <view class="tbl-h sm">
+          <text class="c-cond">条件</text>
+          <text class="c-s">车</text>
+          <text class="c-s">桩</text>
+          <text class="c-s">连</text>
+        </view>
+        <view class="tbl-r sm" wx:for="{{logPresenceRules}}" wx:key="cond">
+          <text class="c-cond">{{item.cond}}</text>
+          <text class="c-s">{{item.vehicle ? '+' + item.vehicle : '—'}}</text>
+          <text class="c-s">{{item.pile ? '+' + item.pile : '—'}}</text>
+          <text class="c-s">{{item.connection ? '+' + item.connection : '—'}}</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 报文位域 -->
+  <block wx:if="{{tab === 'stop'}}">
+    <view class="card">
+      <view class="section-title">BST（车中止）位域加分</view>
+      <view class="tbl">
+        <view class="tbl-h">
+          <text class="c-reason">原因位</text>
+          <text class="c-lean">倾向</text>
+          <text class="c-w">分</text>
+        </view>
+        <view class="tbl-r" wx:for="{{bstBitRules}}" wx:key="index">
+          <text class="c-reason">{{item.reason}}</text>
+          <text class="c-lean lean-{{item.lean}}">{{item.lean === 'vehicle' ? '车' : (item.lean === 'pile' ? '桩' : '连接')}}</text>
+          <text class="c-w">+{{item.weight}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="card">
+      <view class="section-title">CST（桩中止）位域加分</view>
+      <view class="tbl">
+        <view class="tbl-h">
+          <text class="c-reason">原因位</text>
+          <text class="c-lean">倾向</text>
+          <text class="c-w">分</text>
+        </view>
+        <view class="tbl-r" wx:for="{{cstBitRules}}" wx:key="index">
+          <text class="c-reason">{{item.reason}}</text>
+          <text class="c-lean lean-{{item.lean}}">{{item.lean === 'vehicle' ? '车' : (item.lean === 'pile' ? '桩' : '连接')}}</text>
+          <text class="c-w">+{{item.weight}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="card">
+      <view class="section-title">BEM / CEM 超时</view>
+      <view class="note">BEM：每条超时原因 +{{bemRule.weight}} 桩分（上限 {{bemRule.cap}}），另 +{{bemRule.connectionExtra}} 连接分。</view>
+      <view class="note">CEM：每条超时原因 +{{cemRule.weight}} 车分（上限 {{cemRule.cap}}），另 +{{cemRule.connectionExtra}} 连接分。</view>
+      <view class="note">连接器/绝缘/检测点置位：另 +2 连接分。</view>
+      <view class="note">仅 CST 或仅 BST 出现时，单边另 +3；双现则按位域细判。</view>
+    </view>
+  </block>
+
+  <!-- 综合裁决 -->
+  <block wx:if="{{tab === 'verdict'}}">
+    <view class="card">
+      <view class="section-title">三维分数 → 详细结论</view>
+      <view class="rule-row" wx:for="{{verdictThresholds}}" wx:key="key">
+        <view class="rule-label">{{item.label}}</view>
+        <view class="muted">{{item.rule}}</view>
+      </view>
+    </view>
+    <view class="card">
+      <view class="section-title">免费用户三结论（统一规则）</view>
+      <view class="muted" style="margin-bottom:12rpx;">连接领先 → 建议换桩；车/桩领先 ≥2 分 → 对应结论；其余换桩对比。</view>
+      <view class="rule-row" wx:for="{{freeVerdictRules}}" wx:key="order">
+        <view class="rule-label">{{item.order}}. {{item.result}}</view>
+        <view class="muted">{{item.rule}}</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 充电慢 -->
+  <block wx:if="{{tab === 'speed'}}">
+    <view class="card">
+      <view class="section-title">充电慢（BCL / CCS / CML）</view>
+      <view class="muted" style="margin-bottom:16rpx;">独立模块，在「充电慢」页分析；与充不上主分析分开。</view>
+      <view class="rule-row" wx:for="{{speedRuleTable}}" wx:key="label">
+        <view class="rule-label">{{item.label}} <text class="lean-tag">{{item.lean}}</text></view>
+        <view class="muted">{{item.rule}}</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 电池容量 SOH -->
+  <block wx:if="{{tab === 'soh' && sohGuide}}">
+    <view class="card">
+      <view class="section-title">电池容量测试（SOH）</view>
+      <view class="muted" style="margin-bottom:16rpx;">{{sohGuide.intro}}</view>
+      <view class="link-btn" bindtap="goCaptest">打开「电池容量测试」工具 ›</view>
+    </view>
+
+    <view class="card">
+      <view class="section-title">测试流程</view>
+      <view class="step-row" wx:for="{{sohGuide.steps}}" wx:key="title">
+        <view class="step-n" style="background:#B8860B">{{index + 1}}</view>
+        <view class="step-body">
+          <view class="step-title">{{item.title}}</view>
+          <view class="muted">{{item.text}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="section-title">计算原理</view>
+      <view class="formula-box">{{sohGuide.formula}}</view>
+      <view class="section-title" style="margin-top:20rpx;">日志需包含</view>
+      <view class="note" wx:for="{{sohGuide.requirements}}" wx:key="*this">· {{item}}</view>
+      <view class="section-title" style="margin-top:20rpx;">怎样更准</view>
+      <view class="note" wx:for="{{sohGuide.goodPractice}}" wx:key="*this">· {{item}}</view>
+    </view>
+
+    <view class="card">
+      <view class="section-title">电池类型差异</view>
+      <view class="chem-box" wx:for="{{sohGuide.chemistry}}" wx:key="type">
+        <view class="chem-type">{{item.type}}</view>
+        <view class="muted">{{item.note}}</view>
+      </view>
+      <view class="section-title" style="margin-top:20rpx;">常见误解</view>
+      <view class="note muted-note" wx:for="{{sohGuide.misbeliefs}}" wx:key="*this">· {{item}}</view>
+    </view>
+
+    <view class="card disclaimer-box">
+      <view class="section-title">免责声明</view>
+      <view class="disclaimer-item" wx:for="{{sohGuide.disclaimer}}" wx:key="*this">{{item}}</view>
+    </view>
+  </block>
+
+  <!-- 高压电池健康（阻抗 + 不平衡） -->
+  <block wx:if="{{tab === 'impedance' && impedanceGuide}}">
+    <view class="card">
+      <view class="section-title">高压电池健康问题</view>
+      <view class="muted" style="margin-bottom:12rpx;">含高阻抗（限流/掉功率）与单体不平衡（容量受限）两类判定，均须结合电池化学体系解读。</view>
+    </view>
+
+    <view class="card">
+      <view class="section-title">一、高阻抗</view>
+      <view class="muted" style="margin-bottom:12rpx;">{{impedanceGuide.intro}}</view>
+      <view class="note chem-scope">{{impedanceGuide.batteryScope}}</view>
+    </view>
+
+    <view class="card" wx:for="{{impedanceGuide.scenarios}}" wx:key="id">
+      <view class="section-title">{{item.title}}</view>
+      <view class="chem-type">适用：{{item.appliesTo}}</view>
+      <view class="note" wx:if="{{item.symptom}}"><text class="note-label">现象：</text>{{item.symptom}}</view>
+      <view class="note" wx:if="{{item.mechanism}}"><text class="note-label">机理：</text>{{item.mechanism}}</view>
+      <view class="sub-title-sm">厂家 CAN 信号（参考）</view>
+      <view class="note" wx:for="{{item.oemSignals}}" wx:key="*this">· {{item}}</view>
+      <view class="sub-title-sm" wx:if="{{item.testProcedure}}">复现步骤</view>
+      <view class="note" wx:for="{{item.testProcedure}}" wx:key="*this">· {{item}}</view>
+      <view class="sub-title-sm">27930 枪线可观测</view>
+      <view class="note" wx:for="{{item.gbt27930}}" wx:key="*this">· {{item}}</view>
+      <view class="note detect-note" wx:if="{{item.detectNote}}">{{item.detectNote}}</view>
+      <view class="note muted-note" wx:if="{{item.fixNote}}">{{item.fixNote}}</view>
+    </view>
+
+    <view class="card">
+      <view class="section-title">关键阈值</view>
+      <view class="tbl">
+        <view class="tbl-h sm">
+          <text class="c-cond">项目</text>
+          <text class="c-s">阈值</text>
+          <text class="c-lean">范围</text>
+        </view>
+        <view class="tbl-r sm" wx:for="{{impedanceGuide.thresholds}}" wx:key="name">
+          <text class="c-cond">{{item.name}}</text>
+          <text class="c-s">{{item.value}}</text>
+          <text class="c-lean">{{item.scope}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="card disclaimer-box">
+      <view class="section-title">高阻抗免责声明</view>
+      <view class="disclaimer-item" wx:for="{{impedanceGuide.disclaimer}}" wx:key="*this">{{item}}</view>
+    </view>
+
+    <block wx:if="{{imbalanceGuide}}">
+      <view class="card">
+        <view class="section-title">二、单体/SOC 不平衡（容量受限）</view>
+        <view class="muted" style="margin-bottom:12rpx;">{{imbalanceGuide.intro}}</view>
+        <view class="note chem-scope" wx:if="{{imbalanceGuide.relationToImpedance}}">{{imbalanceGuide.relationToImpedance}}</view>
+      </view>
+
+      <view class="card" wx:for="{{imbalanceGuide.scenarios}}" wx:key="id">
+        <view class="section-title">{{item.title}}</view>
+        <view class="chem-type">适用：{{item.appliesTo}}</view>
+        <view class="note" wx:if="{{item.symptom}}"><text class="note-label">现象：</text>{{item.symptom}}</view>
+        <view class="note" wx:if="{{item.mechanism}}"><text class="note-label">机理：</text>{{item.mechanism}}</view>
+        <view class="sub-title-sm">厂家 CAN 信号（参考）</view>
+        <view class="note" wx:for="{{item.oemSignals}}" wx:key="*this">· {{item}}</view>
+        <view class="sub-title-sm" wx:if="{{item.testProcedure}}">测试步骤</view>
+        <view class="note" wx:for="{{item.testProcedure}}" wx:key="*this">· {{item}}</view>
+        <view class="sub-title-sm">27930 枪线可观测</view>
+        <view class="note" wx:for="{{item.gbt27930}}" wx:key="*this">· {{item}}</view>
+        <view class="note detect-note" wx:if="{{item.detectNote}}">{{item.detectNote}}</view>
+        <view class="note muted-note" wx:if="{{item.fixNote}}">{{item.fixNote}}</view>
+      </view>
+
+      <view class="card">
+        <view class="section-title">不平衡关键阈值</view>
+        <view class="tbl">
+          <view class="tbl-h sm">
+            <text class="c-cond">项目</text>
+            <text class="c-s">阈值</text>
+            <text class="c-lean">范围</text>
+          </view>
+          <view class="tbl-r sm" wx:for="{{imbalanceGuide.thresholds}}" wx:key="name">
+            <text class="c-cond">{{item.name}}</text>
+            <text class="c-s">{{item.value}}</text>
+            <text class="c-lean">{{item.scope}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="card disclaimer-box">
+        <view class="section-title">不平衡免责声明</view>
+        <view class="disclaimer-item" wx:for="{{imbalanceGuide.disclaimer}}" wx:key="*this">{{item}}</view>
+      </view>
+    </block>
+  </block>
+</view>

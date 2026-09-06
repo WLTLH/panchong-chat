@@ -1,0 +1,8 @@
+{
+  "envId": "",
+  "functionRoot": "cloudfunctions/",
+  "framework": {
+    "name": "panchong",
+    "plugins": {}
+  }
+}

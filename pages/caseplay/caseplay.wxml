@@ -1,0 +1,105 @@
+<view class="page" wx:if="{{play}}">
+  <view class="hero">
+    <view class="hero-title">{{play.title}}</view>
+    <view class="hero-meta">
+      <text>{{play.busLabel}}</text>
+      <text>{{play.durationLabel}}</text>
+      <text>{{play.stepIndex + 1}}/{{play.stepCount}}</text>
+    </view>
+    <view class="bar"><view class="bar-fill" style="width:{{play.progressPct}}%;"></view></view>
+  </view>
+
+  <!-- CAD 枪口模型 + 孔位叠层 -->
+  <view class="card stage-card {{play.shock?'shock':''}}">
+    <view class="stage">
+      <view class="cad-frame">
+        <view class="cad-layer">
+          <image class="cad-base" src="/assets/connect/cad_gun_face.jpg" mode="scaleToFill" />
+          <view
+            class="mark-pair {{item.lit?'is-lit':''}}"
+            wx:for="{{play.faceMarkers}}"
+            wx:key="key"
+          >
+            <image class="cad-mark mark-grey" src="{{item.greySrc}}" mode="scaleToFill" />
+            <image class="cad-mark mark-lit tone-{{item.tone}}" src="{{item.litSrc}}" mode="scaleToFill" />
+          </view>
+        </view>
+      </view>
+      <view class="shot">
+        <text class="shot-t">{{play.step.t}}</text>
+        <text class="shot-title">{{play.step.title}}</text>
+      </view>
+      <view class="caption">{{play.step.narr}}</view>
+    </view>
+  </view>
+
+  <!-- 充电链路：断在哪一步 -->
+  <view class="card chain-card">
+    <view class="chain-head">
+      <text class="chain-label">充电链路</text>
+      <text class="chain-banner banner-{{play.step.breakAt?'bad':'run'}}">{{play.banner}}</text>
+    </view>
+    <view class="chain">
+      <block wx:for="{{play.chain}}" wx:key="key">
+        <view class="node-wrap">
+          <view class="node st-{{item.state}} {{item.focused?'focus':''}} {{item.isBreak?'break':''}}">
+            <view class="node-x" wx:if="{{item.isBreak}}">✕</view>
+            <text class="node-name">{{item.name}}</text>
+            <text class="node-sub">{{item.sub}}</text>
+          </view>
+        </view>
+        <view class="link lk-{{item.linkState}}" wx:if="{{item.showLink}}">
+          <view class="link-rail"></view>
+          <view class="link-flow" wx:if="{{item.linkState==='on' || item.linkState==='pulse'}}"></view>
+          <view class="link-cut" wx:if="{{item.linkState==='cut'}}">‖</view>
+        </view>
+      </block>
+    </view>
+    <view class="break-tip" wx:if="{{play.step.breakAt}}">
+      断点在 <text class="em">CC2 连接确认</text> — 枪口 CC2 孔位标红，后续继电器/电流不再推进
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">本步关键量</view>
+    <view class="metric-row">
+      <view class="metric" wx:for="{{play.metrics}}" wx:key="k">
+        <text class="m-k">{{item.k}}</text>
+        <text class="m-v">{{item.v}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">过程</view>
+    <view
+      class="tl-item tl-{{item.status}} {{item.broken?'tl-broken':''}}"
+      wx:for="{{play.steps}}"
+      wx:key="t"
+      data-index="{{index}}"
+      bindtap="onPickStep"
+    >
+      <view class="tl-dot"></view>
+      <view class="tl-body">
+        <text class="tl-t">{{item.t}}</text>
+        <text class="tl-title">{{item.title}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="lean-label">{{play.lean.label}}</view>
+    <view class="muted">{{play.lean.summary}}</view>
+  </view>
+
+  <view class="controls">
+    <view class="btn-ghost" bindtap="onPrev">上一步</view>
+    <view class="btn-primary" bindtap="onToggle">{{playing ? '暂停' : '播放复现'}}</view>
+    <view class="btn-ghost" bindtap="onNext">下一步</view>
+  </view>
+  <view class="controls sub">
+    <view class="btn-ghost" bindtap="onReplay">从头播放</view>
+    <view class="btn-ghost" bindtap="goAnalyze">生成结论页</view>
+    <view class="btn-ghost" bindtap="goHome">回采集</view>
+  </view>
+</view>

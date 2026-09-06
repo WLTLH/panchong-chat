@@ -1,0 +1,87 @@
+<view class="page">
+  <view class="card tip">
+    <view class="tip-title">先核对这张「充电采集」接法</view>
+    <view class="muted">对了再装壳/打板。点错不影响，可随时回来看。</view>
+  </view>
+
+  <view class="seg">
+    <view class="seg-item {{tab==='wire'?'on':''}}" data-tab="wire" bindtap="onTab">充电接线</view>
+    <view class="seg-item {{tab==='dual'?'on':''}}" data-tab="dual" bindtap="onTab">双路板</view>
+    <view class="seg-item {{tab==='single'?'on':''}}" data-tab="single" bindtap="onTab">单路板</view>
+  </view>
+
+  <!-- 充电接线 -->
+  <block wx:if="{{tab==='wire'}}">
+    <view class="card">
+      <view class="section-title">现场怎么接（判充主路径）</view>
+      <view class="flow">
+        <view class="flow-box green">① 车 OBD 口</view>
+        <view class="flow-arrow">↓ 取电（16=电源，4/5=地）</view>
+        <view class="flow-box">② 采集盒</view>
+        <view class="flow-arrow">↓ 蓝牙 PanchongCAN</view>
+        <view class="flow-box blue">③ 手机小程序</view>
+      </view>
+      <view class="flow" style="margin-top:28rpx;">
+        <view class="flow-box orange">充电枪 S+ / S-</view>
+        <view class="flow-arrow">↓ 听 27930 充电 CAN（双路=CH0；单路=二选一）</view>
+        <view class="flow-box">采集盒 CAN 收发</view>
+      </view>
+      <view class="flow" style="margin-top:28rpx;">
+        <view class="flow-box purple">OBD 6 / 14</view>
+        <view class="flow-arrow">↓ 听整车 CAN（仅双路 CH1；单路若选听车才接）</view>
+        <view class="flow-box">采集盒第二路 / 或单路改接</view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="section-title">关键点（请你看对不对）</view>
+      <view class="check">✓ OBD-16 只负责给盒子供电（经降压到 5V/3.3V）</view>
+      <view class="check">✓ 判充主数据在枪线 <text class="em">S+ / S-</text>，不在 OBD</view>
+      <view class="check">✓ 双路：可同时听「充电 + 整车」</view>
+      <view class="check">✓ 单路：枪或 OBD 二选一，不能同时接两条总线</view>
+      <view class="check warn">⚠ 听总线用 listen-only，固件不要乱发帧</view>
+      <view class="check warn">⚠ 120Ω 终端默认不焊（车上一般已有）</view>
+    </view>
+
+    <view class="card">
+      <view class="section-title">电源与芯片链（简化）</view>
+      <view class="chain">OBD-16 → 保险 → 防反 → Buck 5V → LDO 3.3V → ESP32-C3</view>
+      <view class="chain">ESP32 TWAI(GPIO6/7) → HVD230 → S+/S-（充电）</view>
+      <view class="chain muted-line">双路另有：SPI → MCP2515 → HVD230 → OBD 6/14</view>
+    </view>
+  </block>
+
+  <!-- 双路板图 -->
+  <block wx:if="{{tab==='dual'}}">
+    <view class="card">
+      <view class="section-title">双路 Dual-CAN XL 总览</view>
+      <view class="muted" style="margin-bottom:12rpx;">CH0=充电 · CH1=整车 · 45×28 mm。点击可放大。</view>
+      <image
+        class="shot"
+        mode="widthFix"
+        src="/assets/circuit/dual_overview.png"
+        data-src="/assets/circuit/dual_overview.png"
+        bindtap="preview"
+      />
+    </view>
+  </block>
+
+  <!-- 单路板图 -->
+  <block wx:if="{{tab==='single'}}">
+    <view class="card">
+      <view class="section-title">单路 Single-CAN XL 总览</view>
+      <view class="muted" style="margin-bottom:12rpx;">仅 1 路 CAN · 出线二选一。点击可放大。</view>
+      <image
+        class="shot"
+        mode="widthFix"
+        src="/assets/circuit/single_overview.png"
+        data-src="/assets/circuit/single_overview.png"
+        bindtap="preview"
+      />
+    </view>
+  </block>
+
+  <view class="card foot">
+    <view class="muted">{{confirmNote}}</view>
+  </view>
+</view>
