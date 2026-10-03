@@ -42,7 +42,10 @@ utils/
   dc_series.js     # 曲线序列
   analyze.js       # 采集评分与路由
 pages/             # home / dcflow / dcchart / tools / result / index / catalog / detail / flow
+hardware/single/   # 单路采集盒 PanchongCAN-S1（原理/BOM/固件）
 ```
+
+单路硬件：`hardware/single/README.md`。小程序「工具 → 充电采集电路 → 单路板」可对照打板。
 
 ## 约定摘要
 

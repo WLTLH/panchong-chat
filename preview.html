@@ -235,6 +235,7 @@
     <button data-show="dcflow">直流流程</button>
     <button data-show="dcchart">报文曲线</button>
     <button data-show="result">分析结果</button>
+    <button data-show="circuit">单路电路</button>
   </div>
 
   <div class="phones" id="phones">
@@ -405,6 +406,43 @@
         </div>
         <div class="tabbar">
           <div class="t">采集</div><div class="t">直流流程</div><div class="t">报文曲线</div><div class="t">工具</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phone" data-page="circuit">
+      <div class="phone-label">工具 · 充电采集电路 · 单路板</div>
+      <div class="screen">
+        <div class="nav">充电采集电路</div>
+        <div class="body">
+          <div class="card" style="background:linear-gradient(135deg,#e8f8ef,#fff);border:1px solid #b7ebc6;">
+            <div class="title" style="color:#07c160;font-size:16px;">PanchongCAN-S1 · 单通道</div>
+            <div class="muted">只听一路 CAN，默认夹枪 S+/S-。与双路同框，去掉 MCP2515。</div>
+          </div>
+          <div class="card">
+            <div style="display:flex;background:#fff;border-radius:999px;padding:3px;gap:4px;">
+              <div class="muted" style="flex:1;text-align:center;padding:8px 0;">充电接线</div>
+              <div class="muted" style="flex:1;text-align:center;padding:8px 0;">双路板</div>
+              <div style="flex:1;text-align:center;padding:8px 0;background:#07C160;color:#fff;border-radius:999px;font-size:13px;font-weight:700;">单路板</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section">板框总览</div>
+            <img src="assets/circuit/single_overview.png" alt="S1 overview" style="width:100%;border-radius:8px;" />
+          </div>
+          <div class="card">
+            <div class="section">主料</div>
+            <div class="obs"><b>U1</b> ESP32-C3-MINI-1 · BLE + TWAI</div>
+            <div class="obs"><b>U2</b> SN65HVD230 · 一路 CAN</div>
+            <div class="obs"><b>JP1</b> 跳线 · 枪或 OBD 二选一</div>
+          </div>
+          <div class="card">
+            <div class="section">和手机</div>
+            <div class="muted" style="font-family:Consolas,monospace;">PanchongCAN-S1 · listen · 250k</div>
+          </div>
+        </div>
+        <div class="tabbar">
+          <div class="t">连接</div><div class="t">报文曲线</div><div class="t on">工具</div><div class="t">我的</div>
         </div>
       </div>
     </div>

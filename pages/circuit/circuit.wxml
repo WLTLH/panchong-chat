@@ -48,6 +48,7 @@
       <view class="chain">OBD-16 → 保险 → 防反 → Buck 5V → LDO 3.3V → ESP32-C3</view>
       <view class="chain">ESP32 TWAI(GPIO6/7) → HVD230 → S+/S-（充电）</view>
       <view class="chain muted-line">双路另有：SPI → MCP2515 → HVD230 → OBD 6/14</view>
+      <view class="chain">单路 S1：同一颗 HVD230，JP1 跳到枪或 OBD，无 MCP2515</view>
     </view>
   </block>
 
@@ -66,11 +67,16 @@
     </view>
   </block>
 
-  <!-- 单路板图 -->
+  <!-- 单路板 -->
   <block wx:if="{{tab==='single'}}">
+    <view class="card tip">
+      <view class="tip-title">PanchongCAN-S1 · 单通道</view>
+      <view class="muted">为现场主路径新做的一版：只听一路 CAN，默认夹枪 S+/S-。和双路同框同孔，去掉 MCP2515，更好焊、更便宜。</view>
+    </view>
+
     <view class="card">
-      <view class="section-title">单路 Single-CAN XL 总览</view>
-      <view class="muted" style="margin-bottom:12rpx;">仅 1 路 CAN · 出线二选一。点击可放大。</view>
+      <view class="section-title">板框总览</view>
+      <view class="muted" style="margin-bottom:12rpx;">45×28 mm · 右侧空出原第二路位置。点击放大。</view>
       <image
         class="shot"
         mode="widthFix"
@@ -78,6 +84,54 @@
         data-src="/assets/circuit/single_overview.png"
         bindtap="preview"
       />
+    </view>
+
+    <view class="card">
+      <view class="section-title">原理图分块</view>
+      <view class="muted" style="margin-bottom:12rpx;">电源 / C3 / HVD230 / JP1 / 蓝牙。点击放大。</view>
+      <image
+        class="shot"
+        mode="widthFix"
+        src="/assets/circuit/single_schematic.png"
+        data-src="/assets/circuit/single_schematic.png"
+        bindtap="preview"
+      />
+    </view>
+
+    <view class="card">
+      <view class="section-title">引脚（相对双路 CH0 不动）</view>
+      <view class="tbl">
+        <view class="tbl-h">
+          <text class="c-io">脚</text>
+          <text class="c-fn">功能</text>
+          <text class="c-to">接到</text>
+        </view>
+        <view class="tbl-r" wx:for="{{pins}}" wx:key="io">
+          <text class="c-io mono">{{item.io}}</text>
+          <text class="c-fn">{{item.fn}}</text>
+          <text class="c-to">{{item.to}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="section-title">主料</view>
+      <view class="tbl">
+        <view class="tbl-r" wx:for="{{bom}}" wx:key="ref">
+          <text class="c-io mono">{{item.ref}}</text>
+          <text class="c-fn">{{item.name}}</text>
+          <text class="c-to">{{item.why}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="section-title">和手机怎么对齐</view>
+      <view class="check" wx:for="{{bleRows}}" wx:key="k">
+        <text class="em">{{item.k}}</text>  {{item.v}}
+      </view>
+      <view class="check warn">⚠ JP1 只能打「枪」或「车」一组；同时短接等于把两条 CAN 并在一起。</view>
+      <view class="check warn">⚠ 高压 DC+/DC-、A+ 不要上这张板。</view>
     </view>
   </block>
 

@@ -11,7 +11,8 @@
 .entry-cap,
 .entry-cell,
 .entry-soh,
-.entry-sim {
+.entry-sim,
+.entry-hw {
   margin: 0 -28rpx 12rpx;
   padding: 28rpx 28rpx;
   border-radius: 16rpx;
@@ -46,13 +47,18 @@
   background: linear-gradient(135deg, #1A2332 0%, #334155 100%);
 }
 
+.entry-hw {
+  background: linear-gradient(135deg, #1B3A2F 0%, #245C40 100%);
+}
+
 .entry-pan .entry-title,
 .entry-yi .entry-title,
 .entry-ju .entry-title,
 .entry-cap .entry-title,
 .entry-cell .entry-title,
 .entry-soh .entry-title,
-.entry-sim .entry-title {
+.entry-sim .entry-title,
+.entry-hw .entry-title {
   color: #F4F8F6;
   font-size: 34rpx;
   letter-spacing: 6rpx;
@@ -64,7 +70,8 @@
 .entry-cap .muted,
 .entry-cell .muted,
 .entry-soh .muted,
-.entry-sim .muted {
+.entry-sim .muted,
+.entry-hw .muted {
   color: rgba(244, 248, 246, 0.68);
 }
 

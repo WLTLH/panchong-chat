@@ -1,0 +1,102 @@
+PanchongCAN-S1 netlist  (45 x 28 mm, 2-layer, 1.0 mm)
+Units: nets only.  GND is a pour on both layers.
+
+NET VIN
+  PAD_16, F1.1, D1.A, D2.1, C1.1
+
+NET VIN_FUSED
+  F1.2, D1.K, U5.VIN, C_in_decap.1
+
+NET +5V
+  U5.VOUT, C2.1, U6.VIN, (opt) USB_VBUS_OR
+
+NET 3V3
+  U6.VOUT, C3.1, U1.3V3, U2.3, C4.1, C12.1
+  R3.1, R4.1, R5.1
+
+NET GND
+  PAD_GND, D1 mechanical, D2.2, C1.2, C2.2, C3.2
+  U5.GND, U6.GND, U1.GND xN, U2.2, C11.2
+  R9.2, R7.2, SW1.2, SW2.2, LED1.A via R6? (LED cathode=GPIO)
+  USB SHIELD, CC resistors to GND, U7.GND
+  Rterm.2 (if fitted)
+
+NET EN
+  U1.EN, R3.2, SW2.1, 100n to GND (opt)
+
+NET GPIO9_BOOT
+  U1.IO9, R4.2, SW1.1
+
+NET GPIO8_PU
+  U1.IO8, R5.2
+
+NET GPIO10_LED
+  U1.IO10, R6.1
+  R6.2 -> LED1.K
+  LED1.A -> 3V3
+
+NET TWAI_TX
+  U1.IO7, U2.1
+
+NET TWAI_RX
+  U1.IO6, U2.4
+
+NET USB_DM
+  U1.IO18, J1.D-
+
+NET USB_DP
+  U1.IO19, J1.D+
+
+NET USB_CC1
+  J1.CC1, R1.1 ; R1.2=GND
+
+NET USB_CC2
+  J1.CC2, R2.1 ; R2.2=GND
+
+NET CANH
+  U2.7, U7.CANH, JP1.2, Rterm.1 (DNP)
+
+NET CANL
+  U2.6, U7.CANL, JP1.5, Rterm.2 (DNP)
+
+NET GUN_CANH
+  JP1.1, J2.1
+
+NET GUN_CANL
+  JP1.4, J2.2
+
+NET OBD_CANH
+  JP1.3, PAD_6
+
+NET OBD_CANL
+  JP1.6, PAD_14
+
+NET VREF
+  U2.5, C11.1
+
+NET FB
+  U5.FB, R8.2, R9.1
+  R8.1 = +5V
+
+NET RS
+  U2.8, R7.1
+  R7.2 = GND
+
+Placement (top view, origin bottom-left, mm):
+  USB-C           X=22.5  Y=28   mid of top edge
+  U1 C3-MINI      X=16    Y=16   antenna toward +Y, keepout Y>24 X>36 empty
+  U5/L1/U6        X=8     Y=10   left of module
+  U2 HVD230       X=34    Y=12   right, former MCP2515 bay empty
+  JP1             X=38    Y=6
+  J2 PH-2P        X=30    Y=2    bottom edge
+  PAD_16/GND/6/14 X=2     Y=6..22 left pads
+  SW1 BOOT        X=10    Y=3
+  SW2 RST         X=14    Y=3
+  LED1            X=20    Y=3
+  holes           (2,2) (43,2) (2,26) (43,26)
+
+Stackup:
+  F.Cu signal + GND pour
+  B.Cu GND pour
+  CANH/CANL as 0.4 mm pair, ~1.5 mm to GND, no via in pair if possible
+  VIN pour limited, 0.5 mm clearance to CAN

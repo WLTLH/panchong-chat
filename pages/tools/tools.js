@@ -40,6 +40,12 @@ Page({
         title: '判定手册',
         desc: '桩/车/连接检查表、报文打分与裁决规则',
         url: '/pages/verdictguide/verdictguide'
+      },
+      {
+        id: 'circuit',
+        title: '充电采集电路',
+        desc: '接线核对 · 双路 / 单路 S1 打板对照',
+        url: '/pages/circuit/circuit?tab=single'
       }
     ],
     hasSession: false,

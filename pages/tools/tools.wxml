@@ -20,7 +20,7 @@
   <view class="card">
     <view class="section-title">工具</view>
     <view
-      class="entry {{item.id==='verdictguide'?'entry-pan':(item.id==='abcompare'?'entry-yi':(item.id==='dbcvw'?'entry-ju':(item.id==='dcsim'?'entry-sim':(item.id==='cellhealth'?'entry-cell':(item.id==='cellhealth_soh'?'entry-soh':'')))))}}"
+      class="entry {{item.id==='verdictguide'?'entry-pan':(item.id==='abcompare'?'entry-yi':(item.id==='dbcvw'?'entry-ju':(item.id==='dcsim'?'entry-sim':(item.id==='cellhealth'?'entry-cell':(item.id==='cellhealth_soh'?'entry-soh':(item.id==='circuit'?'entry-hw':''))))))}}"
       wx:for="{{entries}}"
       wx:key="id"
       data-url="{{item.url}}"

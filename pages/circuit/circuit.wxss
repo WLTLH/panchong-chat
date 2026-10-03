@@ -80,3 +80,19 @@
   background: #f0f0f0;
 }
 .foot { margin-bottom: 40rpx; }
+
+.tbl { margin-top: 8rpx; }
+.tbl-h, .tbl-r {
+  display: flex;
+  gap: 12rpx;
+  padding: 12rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+  font-size: 24rpx;
+  align-items: flex-start;
+}
+.tbl-h { color: #888; font-weight: 600; }
+.tbl-r:last-child { border-bottom: none; }
+.c-io { flex: 0 0 180rpx; color: #07c160; }
+.c-fn { flex: 0 0 240rpx; color: #333; }
+.c-to { flex: 1; color: #666; }
+.mono { font-family: ui-monospace, Menlo, Consolas, monospace; }

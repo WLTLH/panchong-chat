@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PanchongCAN-S1 单路硬件设计</title>
+<style>
+  :root {
+    --green: #07C160;
+    --bg: #F5F6F8;
+    --ink: #1A1A1A;
+    --muted: #667;
+    --navy: #0F2038;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+  }
+  header {
+    background: var(--navy);
+    color: #fff;
+    padding: 28px 24px 24px;
+  }
+  header h1 { margin: 0 0 8px; font-size: 24px; }
+  header p { margin: 0; color: #A8BED2; font-size: 14px; line-height: 1.6; }
+  main { max-width: 1100px; margin: 0 auto; padding: 20px 16px 48px; }
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px;
+    margin: 16px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,.04);
+  }
+  h2 { margin: 0 0 10px; font-size: 18px; }
+  .muted { color: var(--muted); font-size: 13px; line-height: 1.55; }
+  img.fig { width: 100%; border-radius: 10px; background: #f0f0f0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+  th { color: #888; font-weight: 600; }
+  .mono { font-family: ui-monospace, Menlo, Consolas, monospace; color: var(--green); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+  .pill {
+    display: inline-block;
+    background: #E8F8EF;
+    color: #07C160;
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 12px;
+    margin-right: 6px;
+  }
+  pre {
+    background: #F7F8FA;
+    border-radius: 8px;
+    padding: 12px;
+    overflow: auto;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  a { color: #07C160; }
+</style>
+</head>
+<body>
+<header>
+  <h1>判充单路盒 · PanchongCAN-S1</h1>
+  <p>一路 CAN，默认听充电枪 S+/S- 的 GB/T 27930。与双路同框 45×28 mm，去掉 MCP2515。只听不发。</p>
+</header>
+<main>
+  <div class="card">
+    <span class="pill">听充电（默认）</span>
+    <span class="pill">可改听整车</span>
+    <span class="pill">BLE Nordic UART</span>
+    <span class="pill">250 kbit/s listen-only</span>
+    <p class="muted" style="margin:12px 0 0;">
+      供电走 OBD-16，主数据在枪线，不在 OBD。跳线 JP1 二选一，不能同时接两条总线。
+      设计文件在 <span class="mono">hardware/single/</span>。
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>板框总览</h2>
+    <img class="fig" src="../../assets/circuit/single_overview.png" alt="S1 板框总览" />
+  </div>
+  <div class="card">
+    <h2>原理图分块</h2>
+    <img class="fig" src="../../assets/circuit/single_schematic.png" alt="S1 原理图分块" />
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>主料</h2>
+      <table>
+        <tr><th>位号</th><th>料</th><th>做什么</th></tr>
+        <tr><td class="mono">U1</td><td>ESP32-C3-MINI-1-N4</td><td>BLE + TWAI</td></tr>
+        <tr><td class="mono">U2</td><td>SN65HVD230</td><td>一路 CAN</td></tr>
+        <tr><td class="mono">U5</td><td>MP2315 51k/10k</td><td>12V→5V</td></tr>
+        <tr><td class="mono">U6</td><td>AP2112K-3.3</td><td>5V→3.3V</td></tr>
+        <tr><td class="mono">JP1</td><td>2×3 跳线</td><td>枪 / 车</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>和手机</h2>
+      <table>
+        <tr><td>广播名</td><td class="mono">PanchongCAN-S1</td></tr>
+        <tr><td>Service</td><td class="mono">6E400001-…CCA9E</td></tr>
+        <tr><td>命令</td><td class="mono">listen</td></tr>
+        <tr><td>行格式</td><td class="mono">12.345 1826F456 01 01 00</td></tr>
+        <tr><td>固件</td><td class="mono">firmware/panchong_s1.ino</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>现场接法</h2>
+    <pre>OBD-16 / 4(5)  →  盒供电
+枪 S+ / S-     →  JST（JP1 打在「枪」，默认）
+手机蓝牙       →  连接页自动 listen
+
+若改听整车：JP1 打到「车」，6/14 上焊盘，枪线拿开。</pre>
+    <p class="muted">高压 DC+/DC-、A+ 不要上板。120Ω 默认不焊。非隔离地 = 车身 12V 地。</p>
+  </div>
+</main>
+</body>
+</html>
