@@ -71,7 +71,7 @@
   <block wx:if="{{tab==='single'}}">
     <view class="card tip">
       <view class="tip-title">PanchongCAN-S1 · 单通道</view>
-      <view class="muted">为现场主路径新做的一版：只听一路 CAN，默认夹枪 S+/S-。和双路同框同孔，去掉 MCP2515，更好焊、更便宜。</view>
+      <view class="muted">方案能对上小程序，但还没有 Gerber，不能拿这些图去工厂下单。要先用 C3 开发板 + HVD230 模块验固件，再开板。</view>
     </view>
 
     <view class="card">

@@ -8,7 +8,7 @@ NET VIN_FUSED
   F1.2, D1.K, U5.VIN, C_in_decap.1
 
 NET +5V
-  U5.VOUT, C2.1, U6.VIN, (opt) USB_VBUS_OR
+  L1.2, C2.1, U6.VIN, R8.1, (opt) D3.K from USB_VBUS
 
 NET 3V3
   U6.VOUT, C3.1, U1.3V3, U2.3, C4.1, C12.1
@@ -17,9 +17,9 @@ NET 3V3
 NET GND
   PAD_GND, D1 mechanical, D2.2, C1.2, C2.2, C3.2
   U5.GND, U6.GND, U1.GND xN, U2.2, C11.2
-  R9.2, R7.2, SW1.2, SW2.2, LED1.A via R6? (LED cathode=GPIO)
+  R9.2, R7.2, SW1.2, SW2.2
   USB SHIELD, CC resistors to GND, U7.GND
-  Rterm.2 (if fitted)
+  Rterm 跨 CANH–CANL，两端都不是 GND
 
 NET EN
   U1.EN, R3.2, SW2.1, 100n to GND (opt)
@@ -75,12 +75,34 @@ NET VREF
   U2.5, C11.1
 
 NET FB
-  U5.FB, R8.2, R9.1
+  U5.8 FB, R8.2, R9.1
   R8.1 = +5V
+
+NET SW
+  U5.3 SW, L1.1, C13.2 (BST cap)
+
+NET BST
+  U5.5 BST, C13.1
+
+NET VCC_MP
+  U5.7 VCC, C14.1 ; C14.2 = GND
+
+NET AAM
+  U5.1 AAM, R11.1 ; R11.2 = GND
+
+NET EN_BUCK
+  U5.6 EN, R12.1 ; R12.2 = VIN_FUSED
+
+NET EN_LDO
+  U6.3 EN, R13.1 ; R13.2 = +5V (U6.1 IN)
 
 NET RS
   U2.8, R7.1
   R7.2 = GND
+
+NOTE
+  本文件是人工对照，不能当工业网表 / Gerber 源。
+  MP2315GJ = TSOT23-8，不是 SOT23-6。
 
 Placement (top view, origin bottom-left, mm):
   USB-C           X=22.5  Y=28   mid of top edge

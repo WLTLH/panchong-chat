@@ -66,17 +66,17 @@
 <body>
 <header>
   <h1>判充单路盒 · PanchongCAN-S1</h1>
-  <p>一路 CAN，默认听充电枪 S+/S- 的 GB/T 27930。与双路同框 45×28 mm，去掉 MCP2515。只听不发。</p>
+      <p>一路 CAN，默认听充电枪 S+/S- 的 GB/T 27930。与双路同框 45×28 mm，去掉 MCP2515。只听不发。现有文件还不能投产，先开发板验证。</p>
 </header>
 <main>
   <div class="card">
     <span class="pill">听充电（默认）</span>
     <span class="pill">可改听整车</span>
     <span class="pill">BLE Nordic UART</span>
-    <span class="pill">250 kbit/s listen-only</span>
+    <span class="pill">还不能投产</span>
     <p class="muted" style="margin:12px 0 0;">
-      供电走 OBD-16，主数据在枪线，不在 OBD。跳线 JP1 二选一，不能同时接两条总线。
-      设计文件在 <span class="mono">hardware/single/</span>。
+      <b>现在不能拿本页去嘉立创下单</b>（无 Gerber）。供电走 OBD-16，主数据在枪线。
+      JP1 二选一。先 C3 开发板 + HVD230 验 <span class="mono">firmware/panchong_s1.ino</span>。
     </p>
   </div>
 

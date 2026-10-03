@@ -4,6 +4,21 @@
 
 > 只听不发。不定责。不替代官方诊断仪。
 
+## 打出来能用吗（现状）
+
+**按本目录现有文件直接丢嘉立创 / 板厂：不能。** 没有可投产的原理图 CAD、没有 PCB、没有 Gerber。总览图和 `netlist.txt` 是给人看的对照，工厂不能照此开料。
+
+| 问 | 答 |
+|---|---|
+| 方案对不对（C3 + 一颗 HVD230 + 小程序 BLE） | **对。** 和连接页协议已对齐，行格式测过 |
+| 现在这包能不能打板 | **不能。** 缺 Gerber；Buck 也不能只焊 BOM 里那几颗 |
+| 固件插上车能不能用 | **还没上过真机。** `.ino` 是草稿，没在 C3 上编过、没听过真 27930 |
+| 这周怎样能用 | 先用 **C3 开发板 + HVD230 模块**（见下），再开板 |
+
+上次稿把 MP2315 写成了 SOT23-6，实际是 **TSOT23-8**，还缺 BST / VCC / AAM / EN；AP2112K 的 EN 也必须拉高。按旧 BOM 画板，上电 5V/3.3V 就可能起不来。
+
+要变成「打出来能用」还差：完整原理图、C3-MINI-1 封装无误的 PCB、Gerber + 贴片坐标、固件在开发板上跑通。不要拿 PNG 去下单。
+
 ## 和双路的差别
 
 | | 双路 Dual-CAN XL | **单路 S1（本设计）** |
@@ -48,15 +63,28 @@ OBD-16 (12V，可选 24V 换料)
 - 120Ω 终端 **默认不焊**（车上已有）
 - 不要同时把枪线和 OBD CAN 接到同一收发器
 
+## 先用开发板（这周能验证）
+
+不要等定制板。下面这套和量产脚位一致，小程序不用改：
+
+1. `ESP32-C3-DevKitM-1`（或任何 C3，USB 能刷机）
+2. `SN65HVD230` / VP230 模块（3.3V）
+3. 杜邦线：`GPIO7 → TXD`，`GPIO6 → RXD`，`3V3`、`GND` 共地
+4. Arduino-ESP32 3.x 烧 `firmware/panchong_s1.ino`
+5. 手机连 `PanchongCAN-S1`，连接页会写 `listen`
+6. 台架：模块 CANH/L 接到能出 250k 扩展帧的源；上车再夹枪 `S+ / S-`（先确认 S- 对 PE）
+
+车上供电：开发板用点烟器 5V USB，**不要**把 12V 接到 C3 的 5V 脚。听总线时模块 Rs 接地（高速）。
+
 ## 本目录
 
 | 文件 | 内容 |
 |---|---|
-| `BOM.csv` | 可下单物料 |
+| `BOM.csv` | 量产意向物料（还不能当 SMT 工程文件） |
 | `pinmap.md` | C3 引脚与连接器 |
-| `netlist.txt` | 打板用网络表 |
-| `firmware/panchong_s1.ino` | Arduino-ESP32 听总线固件 |
-| `preview.html` | 浏览器看设计（非原理图 CAD） |
+| `netlist.txt` | 人工网络对照，**不是**工业网表 |
+| `firmware/panchong_s1.ino` | Arduino-ESP32 听总线草稿 |
+| `preview.html` | 浏览器看设计（非 CAD） |
 
 板图 / 原理图块：`assets/circuit/single_overview.png`、`single_schematic.png`（`scripts/gen_single_can_board.py` 生成）。小程序「工具 → 充电采集电路 → 单路板」同步展示。
 
