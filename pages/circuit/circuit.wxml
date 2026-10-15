@@ -132,6 +132,8 @@
       </view>
       <view class="check warn">⚠ JP1 只能打「枪」或「车」一组；同时短接等于把两条 CAN 并在一起。</view>
       <view class="check warn">⚠ 高压 DC+/DC-、A+ 不要上这张板。</view>
+      <view class="check warn">⚠ 插 OBD 若仪表狂响：先拔掉。多半是 6/14 接到了收发器，且 TXD 上电为低，把整车 CAN 堵住了。USB 和 OBD 不要同时插。</view>
+      <view class="check warn">⚠ 听充电时 OBD 只接 16 和地，6/14 用胶布包住。</view>
     </view>
   </block>
 

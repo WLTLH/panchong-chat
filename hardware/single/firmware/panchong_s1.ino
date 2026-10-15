@@ -32,6 +32,13 @@ static uint32_t t0ms = 0;
 
 static void led(bool on) { digitalWrite(PIN_LED, on ? LOW : HIGH); }
 
+/** HVD230 TXD 低电平 = 总线显性，会把整车 CAN 堵住、仪表狂响。上电先拉高。 */
+static void holdTxRecessive() {
+  pinMode(PIN_TWAI_TX, OUTPUT);
+  digitalWrite(PIN_TWAI_TX, HIGH);
+  pinMode(PIN_TWAI_RX, INPUT_PULLUP);
+}
+
 static void notifyChunked(const char *s) {
   if (!txChar || !bleReady) return;
   const int CHUNK = 20;
@@ -54,6 +61,7 @@ static bool twaiStart(uint32_t bps) {
     twai_stop();
     twai_driver_uninstall();
     twaiInstalled = false;
+    holdTxRecessive();
   }
 
   twai_general_config_t g = TWAI_GENERAL_CONFIG_DEFAULT(
@@ -89,7 +97,12 @@ static void handleCmd(String raw) {
   }
   if (raw == "stop") {
     listening = false;
-    twai_stop();
+    if (twaiInstalled) {
+      twai_stop();
+      twai_driver_uninstall();
+      twaiInstalled = false;
+    }
+    holdTxRecessive();
     led(false);
     sendLine("# stop\n");
     return;
@@ -143,6 +156,7 @@ class RxCb : public BLECharacteristicCallbacks {
 };
 
 void setup() {
+  holdTxRecessive();
   pinMode(PIN_LED, OUTPUT);
   led(false);
 

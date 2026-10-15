@@ -18,8 +18,9 @@ Item,Qty,Ref,Value / MPN,Package,DNP,Note
 17,1,R4,10k,0402,,GPIO9 BOOT 上拉
 18,1,R5,10k,0402,,GPIO8 上拉（strapping）
 19,1,R6,1k,0402,,LED 限流
-20,1,R7,0R,0402,,HVD230 Rs→GND 高速
-21,1,R8,51k,0402,,MP2315 FB 上（Vref≈0.8V → 约 4.88V；可改 52.3k 贴近 5.0V）
+20,1,R7,47k,0402,,HVD230 Rs→3V3（待机，避免上电堵 CAN）；要高速再飞线接地或 GPIO 拉低
+21,1,R14,4.7k,0402,,HVD230 TXD→3V3 上拉，防止 GPIO 浮空/复位时总线显性
+22,1,R8,51k,0402,,MP2315 FB 上（Vref≈0.8V → 约 4.88V；可改 52.3k 贴近 5.0V）
 22,1,R9,10k,0402,,MP2315 FB 下
 23,1,R11,100k,0402,,MP2315 AAM→GND（轻载；要强制 CCM 则改接 VCC）
 24,1,R12,100k,0402,,MP2315 EN→IN
